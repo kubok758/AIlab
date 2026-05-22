@@ -41,37 +41,88 @@
             overflow: hidden;
         }
 
+        /* Исправленная трехкомпонентная шапка в стиле iOS */
         header {
-            padding: 10px 16px;
+            padding: 10px 14px;
             background: var(--glass);
             backdrop-filter: blur(25px) saturate(180%);
             -webkit-backdrop-filter: blur(25px) saturate(180%);
             border: 1px solid var(--glass-border);
             border-radius: 18px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.02), inset 0 1px 1px white;
+            
+            display: grid;
+            grid-template-columns: 1fr auto 1fr; /* 3 абсолютно независимые зоны */
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-zone {
             display: flex;
-            justify-content: space-between;
             align-items: center;
         }
 
-        .brand-zone { display: flex; align-items: center; gap: 8px; }
-        h1 { font-size: 1rem; font-weight: 700; background: linear-gradient(135deg, #007aff, #5856d6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #007aff, #5856d6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+        }
+
+        .history-zone {
+            display: flex;
+            justify-content: center;
+        }
 
         .btn-history-trigger {
-            background: rgba(0, 0, 0, 0.04);
+            background: rgba(0, 0, 0, 0.05);
             border: 1px solid rgba(0,0,0,0.02);
-            padding: 5px 10px;
-            border-radius: 10px;
+            padding: 6px 12px;
+            border-radius: 11px;
             font-size: 0.75rem;
             font-weight: 600;
             color: var(--text-main);
             cursor: pointer;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .btn-history-trigger:active { background: rgba(0, 0, 0, 0.1); }
+
+        .stats-zone {
+            display: flex;
+            justify-content: flex-end;
         }
 
-        .stats { display: flex; gap: 10px; font-size: 0.78rem; color: var(--text-muted); }
-        .stats b { color: var(--text-main); font-weight: 600; }
+        .stats {
+            display: flex;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
 
-        main { display: flex; align-items: center; justify-content: center; min-height: 0; width: 100%; }
+        .stats span {
+            display: inline-block;
+        }
+
+        .stats b {
+            color: var(--text-main);
+            font-weight: 600;
+            display: inline-block;
+            min-width: 15px; /* Резервируем место под цифры, чтобы текст не дергался */
+        }
+
+        /* Интерактивная зона */
+        main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
+            width: 100%;
+        }
 
         .canvas-container {
             max-width: 100%;
@@ -88,8 +139,14 @@
             justify-content: center;
         }
 
-        canvas { border-radius: 18px; background: rgba(255, 255, 255, 0.9); max-width: 100%; max-height: 100%; }
+        canvas {
+            border-radius: 18px;
+            max-width: 100%;
+            max-height: 100%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
 
+        /* Нижний Док */
         .bottom-dock {
             padding: 12px;
             background: rgba(255, 255, 255, 0.5);
@@ -166,11 +223,15 @@
     <header>
         <div class="brand-zone">
             <h1>AI Explorer</h1>
+        </div>
+        <div class="history-zone">
             <button id="btnHistory" class="btn-history-trigger">⏱ История</button>
         </div>
-        <div class="stats">
-            <span>Изучено: <b id="stat-visited">0</b></span>
-            <span>Путь: <b id="stat-path">0</b></span>
+        <div class="stats-zone">
+            <div class="stats">
+                <span>Изуч: <b id="stat-visited">0</b></span>
+                <span>Путь: <b id="stat-path">0</b></span>
+            </div>
         </div>
     </header>
 
@@ -182,7 +243,7 @@
 
     <div class="bottom-dock">
         <div class="mode-description">
-            <span id="modeDesc">🧠 ИИ-Навигатор: оценивает расстояние до финиша по воздуху и сразу выбирает оптимальный вектор движения. Удерживайте и тащите точки СТАРТ/ФИНИШ для переноса.</span>
+            <span id="modeDesc">🧠 ИИ-Навигатор: оценивает расстояние до финиша по воздуху и сразу выбирает оптимальный вектор движения. Зажмите точки СТАРТ/ФИНИШ для переноса.</span>
             <button id="btnSaveVideo" class="btn-video-download">📹 Скачать видео прохождения</button>
         </div>
 
@@ -230,7 +291,6 @@
         const COLS = 21, ROWS = 21; 
         let cellSize = 0, grid = [], isDrawing = false, modeDrawWall = true, isRunning = false;
         
-        // Переменные для перетаскивания точек
         let isDraggingStart = false;
         let isDraggingEnd = false;
 
@@ -262,7 +322,7 @@
             if (saved) {
                 const config = JSON.parse(saved);
                 document.getElementById('algoSelector').value = config.algo;
-                document.getElementById('modeDesc').innerText = descriptions[config.algo] + " Удерживайте и тащите точки СТАРТ/ФИНИШ для переноса.";
+                document.getElementById('modeDesc').innerText = descriptions[config.algo] + " Зажмите точки СТАРТ/ФИНИШ для переноса.";
                 aiDelay = config.delay;
                 modeDrawWall = config.tool;
                 if(config.start) startNode = config.start;
@@ -293,8 +353,12 @@
             render();
         }
 
+        // Исправленная функция рендеринга (Чистый белый фон для захвата видео)
         function render() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffffff'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Стены
             ctx.fillStyle = '#334155';
             for (let x = 0; x < COLS; x++) {
                 for (let y = 0; y < ROWS; y++) {
@@ -306,12 +370,15 @@
                 }
             }
 
+            // Мысли ИИ
             ctx.fillStyle = 'rgba(147, 51, 234, 0.12)';
             for (let node of visitedArr) ctx.fillRect(node.x * cellSize, node.y * cellSize, cellSize, cellSize);
 
+            // Направление поиска
             ctx.fillStyle = 'rgba(0, 122, 255, 0.3)';
             for (let node of frontierArr) ctx.fillRect(node.x * cellSize, node.y * cellSize, cellSize, cellSize);
 
+            // Маршрут
             if (finalPath.length > 0) {
                 ctx.strokeStyle = '#34c759'; ctx.lineWidth = cellSize * 0.3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath();
                 ctx.moveTo(startNode.x * cellSize + cellSize / 2, startNode.y * cellSize + cellSize / 2);
@@ -319,6 +386,7 @@
                 ctx.stroke();
             }
 
+            // Старт и Финиш
             ctx.fillStyle = '#007aff'; ctx.beginPath(); ctx.arc(startNode.x * cellSize + cellSize / 2, startNode.y * cellSize + cellSize / 2, cellSize * 0.35, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = '#ff3b30'; ctx.beginPath(); ctx.arc(endNode.x * cellSize + cellSize / 2, endNode.y * cellSize + cellSize / 2, cellSize * 0.35, 0, Math.PI * 2); ctx.fill();
         }
@@ -359,12 +427,12 @@
                     if (isDraggingStart) {
                         if (cell.x !== endNode.x || cell.y !== endNode.y) {
                             startNode.x = cell.x; startNode.y = cell.y;
-                            grid[cell.x][cell.y] = 0; // Стираем стену под точкой
+                            grid[cell.x][cell.y] = 0; 
                         }
                     } else if (isDraggingEnd) {
                         if (cell.x !== startNode.x || cell.y !== startNode.y) {
                             endNode.x = cell.x; endNode.y = cell.y;
-                            grid[cell.x][cell.y] = 0; // Стираем стену под точкой
+                            grid[cell.x][cell.y] = 0; 
                         }
                     } else if (isDrawing) {
                         if ((cell.x === startNode.x && cell.y === startNode.y) || (cell.x === endNode.x && cell.y === endNode.y)) return;
