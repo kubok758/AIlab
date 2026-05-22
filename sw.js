@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ai-maze-liquid-v12'; // Новая версия кэша для сброса старой памяти на смартфонах
+const CACHE_NAME = 'ai-maze-liquid-v13'; // Версия v13 для принудительного сброса старого кэша на смартфонах
 const ASSETS = [
   './',
   'index.html',
@@ -13,7 +13,7 @@ self.addEventListener('install', (e) => {
   );
 });
 
-// Активация: находим старые версии кэша (v11, v2, v1) и безжалостно их удаляем
+// Активация: находим абсолютно все старые версии кэша и удаляем их
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
@@ -29,7 +29,7 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Перехват запросов: отдаем файлы из свежего кэша для мгновенной работы без интернета
+// Перехват запросов: отдаем файлы из свежего кэша для мгновенной работы в offline
 self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.match(e.request).then((cached) => cached || fetch(e.request))
