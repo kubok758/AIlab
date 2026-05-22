@@ -41,9 +41,12 @@
             overflow: hidden;
         }
 
-        /* Исправленная трехкомпонентная шапка в стиле iOS */
+        /* Идеально фиксированная шапка — Баг №1 Исправлен */
         header {
-            padding: 10px 14px;
+            height: 50px;
+            max-height: 50px;
+            min-height: 50px;
+            padding: 0 14px;
             background: var(--glass);
             backdrop-filter: blur(25px) saturate(180%);
             -webkit-backdrop-filter: blur(25px) saturate(180%);
@@ -52,30 +55,14 @@
             box-shadow: 0 4px 24px rgba(0,0,0,0.02), inset 0 1px 1px white;
             
             display: grid;
-            grid-template-columns: 1fr auto 1fr; /* 3 абсолютно независимые зоны */
-            align-items: center;
-            gap: 10px;
-        }
-
-        .brand-zone {
-            display: flex;
+            grid-template-columns: 90px 1fr 120px; /* Жесткий каркас колонок */
             align-items: center;
         }
 
-        h1 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #007aff, #5856d6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            white-space: nowrap;
-        }
+        .brand-zone { display: flex; align-items: center; }
+        h1 { font-size: 0.95rem; font-weight: 700; background: linear-gradient(135deg, #007aff, #5856d6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .history-zone {
-            display: flex;
-            justify-content: center;
-        }
-
+        .history-zone { display: flex; justify-content: center; }
         .btn-history-trigger {
             background: rgba(0, 0, 0, 0.05);
             border: 1px solid rgba(0,0,0,0.02);
@@ -87,133 +74,93 @@
             cursor: pointer;
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
             transition: background 0.2s;
-            white-space: nowrap;
         }
         .btn-history-trigger:active { background: rgba(0, 0, 0, 0.1); }
 
-        .stats-zone {
-            display: flex;
-            justify-content: flex-end;
-        }
-
+        .stats-zone { display: flex; justify-content: flex-end; }
         .stats {
             display: flex;
             gap: 8px;
             font-size: 0.75rem;
             color: var(--text-muted);
-            white-space: nowrap;
+            font-variant-numeric: tabular-nums; /* Моноширинные цифры (фикс дрожания) */
         }
+        .stats b { color: var(--text-main); font-weight: 600; }
 
-        .stats span {
-            display: inline-block;
-        }
-
-        .stats b {
-            color: var(--text-main);
-            font-weight: 600;
-            display: inline-block;
-            min-width: 15px; /* Резервируем место под цифры, чтобы текст не дергался */
-        }
-
-        /* Интерактивная зона */
-        main {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 0;
-            width: 100%;
-        }
-
+        /* Игровая зона */
+        main { display: flex; align-items: center; justify-content: center; min-height: 0; width: 100%; }
         .canvas-container {
-            max-width: 100%;
-            max-height: 100%;
-            aspect-ratio: 1/1;
-            background: rgba(255, 255, 255, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 6px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            max-width: 100%; max-height: 100%; aspect-ratio: 1/1;
+            background: rgba(255, 255, 255, 0.25); border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px); border-radius: 24px; padding: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02); display: flex; align-items: center; justify-content: center;
         }
-
-        canvas {
-            border-radius: 18px;
-            max-width: 100%;
-            max-height: 100%;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-        }
+        canvas { border-radius: 18px; max-width: 100%; max-height: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
 
         /* Нижний Док */
         .bottom-dock {
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(35px) saturate(190%);
-            -webkit-backdrop-filter: blur(35px) saturate(190%);
-            border: 1px solid var(--glass-border);
-            border-radius: 28px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.04), inset 0 1px 1px rgba(255,255,255,0.8);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            padding: 12px; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(35px) saturate(190%); -webkit-backdrop-filter: blur(35px) saturate(190%);
+            border: 1px solid var(--glass-border); border-radius: 28px; box-shadow: 0 10px 40px rgba(0,0,0,0.04), inset 0 1px 1px rgba(255,255,255,0.8);
+            display: flex; flex-direction: column; gap: 10px;
         }
-
         .dock-row { display: flex; gap: 8px; align-items: center; }
 
         .mode-description {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-align: center;
-            background: rgba(0,0,0,0.03);
-            padding: 6px 12px;
-            border-radius: 10px;
-            font-weight: 500;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
+            font-size: 0.75rem; color: var(--text-muted); text-align: center; background: rgba(0,0,0,0.03); padding: 6px 12px; border-radius: 10px; font-weight: 500;
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
         }
-
         .btn-video-download {
-            background: linear-gradient(135deg, #34c759 0%, #28a745 100%);
-            color: white; border: none; padding: 6px 14px; border-radius: 10px;
-            font-size: 0.75rem; font-weight: 700; cursor: pointer;
-            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3); display: none;
+            background: linear-gradient(135deg, #34c759 0%, #28a745 100%); color: white; border: none; padding: 6px 14px; border-radius: 10px;
+            font-size: 0.75rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3); display: none;
         }
 
         .segmented-control { display: flex; background: rgba(0, 0, 0, 0.05); padding: 2px; border-radius: 14px; flex: 1; }
-        .segmented-control button {
-            flex: 1; border: none; background: transparent; padding: 8px 2px;
-            font-size: 0.8rem; font-weight: 600; color: var(--text-muted); border-radius: 12px; cursor: pointer;
-        }
+        .segmented-control button { flex: 1; border: none; background: transparent; padding: 8px 2px; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); border-radius: 12px; cursor: pointer; }
         .segmented-control button.active { background: #ffffff; color: var(--text-main); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
-        select {
-            appearance: none; background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0,0,0,0.03);
-            padding: 8px 12px; border-radius: 14px; font-size: 0.8rem; font-weight: 600; color: var(--text-main); flex: 1.2; text-align: center; outline: none;
-        }
-
+        select { appearance: none; background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0,0,0,0.03); padding: 8px 12px; border-radius: 14px; font-size: 0.8rem; font-weight: 600; color: var(--text-main); flex: 1.2; text-align: center; outline: none; }
         button.action-btn { background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(0,0,0,0.01); padding: 9px; border-radius: 14px; font-size: 0.78rem; font-weight: 600; color: var(--text-main); cursor: pointer; flex: 1; }
 
         button.primary-launch {
-            background: linear-gradient(135deg, #007aff 0%, #0056b3 100%);
-            color: white; border: none; padding: 12px; border-radius: 16px; font-size: 0.9rem; font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px rgba(0, 122, 255, 0.25); transition: all 0.2s;
+            background: linear-gradient(135deg, #007aff 0%, #0056b3 100%); color: white; border: none; padding: 12px; border-radius: 16px; font-size: 0.9rem; font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px rgba(0, 122, 255, 0.25); transition: all 0.2s;
         }
-        button.primary-launch:active { transform: scale(0.97); }
         button:disabled, select:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
 
-        /* Окна истории */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal-card { background: rgba(255, 255, 255, 0.75); border: 1px solid var(--glass-border); box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 24px; width: 100%; max-width: 400px; max-height: 70vh; display: flex; flex-direction: column; padding: 20px; }
+        /* Анимация и верстка оверлея истории — Баг №2 Исправлен */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease; /* Плавное проявление подложки */
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            border-radius: 28px;
+            width: 100%; max-width: 400px; max-height: 60vh;
+            display: flex; flex-direction: column; padding: 22px;
+            
+            /* Эффект вылета снизу вверх */
+            transform: translateY(100px) scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.15, 0.85, 0.45, 1);
+        }
+        .modal-overlay.active .modal-card { transform: translateY(0) scale(1); }
+
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .modal-header h3 { font-size: 1.1rem; font-weight: 700; }
         .modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--ios-red); font-weight: bold;}
-        .history-list { overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .history-item { background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.03); padding: 10px; border-radius: 14px; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center; }
-        .history-item-info span { display: block; color: var(--text-muted); font-size: 0.7rem; }
-        .btn-replay { background: var(--ios-blue); color: white; border: none; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
+        
+        .history-list { overflow-y: auto; display: flex; flex-direction: column; gap: 10px; max-height: 100%; padding-bottom: 10px;}
+        .history-item { background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.02); padding: 12px; border-radius: 14px; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.01); }
+        .history-item-info span { display: block; color: var(--text-muted); font-size: 0.7rem; margin-top: 2px; }
+        .btn-replay { background: var(--ios-blue); color: white; border: none; padding: 7px 12px; border-radius: 9px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: opacity 0.1s; }
+        .btn-replay:active { opacity: 0.7; }
 
         @media (min-width: 768px) { body { padding: 30px; gap: 20px; } .bottom-dock { width: 500px; margin: 0 auto; } .canvas-container { max-width: 500px; } }
     </style>
@@ -325,8 +272,8 @@
                 document.getElementById('modeDesc').innerText = descriptions[config.algo] + " Зажмите точки СТАРТ/ФИНИШ для переноса.";
                 aiDelay = config.delay;
                 modeDrawWall = config.tool;
-                if(config.start) startNode = config.start;
-                if(config.end) endNode = config.end;
+                if(config.start) { startNode.x = config.start.x; startNode.y = config.start.y; }
+                if(config.end) { endNode.x = config.end.x; endNode.y = config.end.y; }
                 
                 document.getElementById('spdSlow').classList.toggle('active', aiDelay === 60);
                 document.getElementById('spdNormal').classList.toggle('active', aiDelay === 15);
@@ -353,7 +300,6 @@
             render();
         }
 
-        // Исправленная функция рендеринга (Чистый белый фон для захвата видео)
         function render() {
             ctx.fillStyle = '#ffffff'; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -542,7 +488,9 @@
                 id: Date.now(),
                 time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
                 algo: algoName, checked: checkedNodes, route: routeLen,
-                gridState: JSON.parse(JSON.stringify(grid)), start: {...startNode}, end: {...endNode}
+                gridState: JSON.parse(JSON.stringify(grid)), 
+                start: {x: startNode.x, y: startNode.y}, 
+                end: {x: endNode.x, y: endNode.y}
             });
             if(list.length > 15) list.pop();
             localStorage.setItem('maze_history_list', JSON.stringify(list));
@@ -550,10 +498,14 @@
 
         function setupHistoryUI() {
             const overlay = document.getElementById('historyOverlay');
-            document.getElementById('btnHistory').onclick = () => { buildHistoryDOM(); overlay.style.display = 'flex'; };
-            document.getElementById('btnCloseHistory').onclick = () => overlay.style.display = 'none';
+            document.getElementById('btnHistory').onclick = () => { buildHistoryDOM(); overlay.classList.add('active'); };
+            document.getElementById('btnCloseHistory').onclick = () => overlay.classList.remove('active');
+            
+            // Закрытие тапом по фону
+            overlay.onclick = (e) => { if(e.target === overlay) overlay.classList.remove('active'); }
         }
 
+        // Аппаратное исправление кнопки «Открыть» — Баг №3 Исправлен
         function buildHistoryDOM() {
             const container = document.getElementById('historyListContainer'); container.innerHTML = '';
             const list = JSON.parse(localStorage.getItem('maze_history_list') || '[]');
@@ -570,9 +522,19 @@
                     const targetId = parseInt(e.target.getAttribute('data-id'));
                     const sel = list.find(x => x.id === targetId);
                     if(sel) {
-                        grid = JSON.parse(JSON.stringify(sel.gridState));
-                        if(sel.start) startNode = sel.start; if(sel.end) endNode = sel.end;
-                        resetAIStats(); document.getElementById('historyOverlay').style.display = 'none';
+                        // Поклеточное копирование карты
+                        for(let x=0; x<COLS; x++) {
+                            for(let y=0; y<ROWS; y++) {
+                                grid[x][y] = sel.gridState[x][y];
+                            }
+                        }
+                        // Жесткая мутация координат вместо подмены ссылок
+                        if(sel.start) { startNode.x = sel.start.x; startNode.y = sel.start.y; }
+                        if(sel.end) { endNode.x = sel.end.x; endNode.y = sel.end.y; }
+                        
+                        resetAIStats(); 
+                        saveConfig();
+                        document.getElementById('historyOverlay').classList.remove('active');
                     }
                 };
             });
