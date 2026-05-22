@@ -1,5 +1,5 @@
 // Меняем версию кэша на v2. Это сигнал для телефона, что пора обновиться!
-const CACHE_NAME = 'ai-maze-liquid-v2';
+const CACHE_NAME = 'ai-maze-liquid-v3';
 const ASSETS = [
   './',
   'index.html',
