@@ -41,7 +41,6 @@
             overflow: hidden;
         }
 
-        /* Идеально фиксированная шапка — Баг №1 Исправлен */
         header {
             height: 50px;
             max-height: 50px;
@@ -55,7 +54,7 @@
             box-shadow: 0 4px 24px rgba(0,0,0,0.02), inset 0 1px 1px white;
             
             display: grid;
-            grid-template-columns: 90px 1fr 120px; /* Жесткий каркас колонок */
+            grid-template-columns: 90px 1fr 120px;
             align-items: center;
         }
 
@@ -83,11 +82,10 @@
             gap: 8px;
             font-size: 0.75rem;
             color: var(--text-muted);
-            font-variant-numeric: tabular-nums; /* Моноширинные цифры (фикс дрожания) */
+            font-variant-numeric: tabular-nums;
         }
         .stats b { color: var(--text-main); font-weight: 600; }
 
-        /* Игровая зона */
         main { display: flex; align-items: center; justify-content: center; min-height: 0; width: 100%; }
         .canvas-container {
             max-width: 100%; max-height: 100%; aspect-ratio: 1/1;
@@ -97,10 +95,9 @@
         }
         canvas { border-radius: 18px; max-width: 100%; max-height: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
 
-        /* Нижний Док */
         .bottom-dock {
             padding: 12px; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(35px) saturate(190%); -webkit-backdrop-filter: blur(35px) saturate(190%);
-            border: 1px solid var(--glass-border); border-radius: 28px; box-shadow: 0 10px 40px rgba(0,0,0,0.04), inset 0 1px 1px rgba(255,255,255,0.8);
+            border: 1px solid var(--glass-border); border-radius: 28px; box-shadow: 0 10px 40px rgba(0,0,0,0.04), inset 0 1px 1px rgba(255, 255, 255, 0.8);
             display: flex; flex-direction: column; gap: 10px;
         }
         .dock-row { display: flex; gap: 8px; align-items: center; }
@@ -126,29 +123,15 @@
         }
         button:disabled, select:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
 
-        /* Анимация и верстка оверлея истории — Баг №2 Исправлен */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            z-index: 100;
-            display: flex; align-items: center; justify-content: center; padding: 20px;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.4s ease; /* Плавное проявление подложки */
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .modal-card {
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
-            border-radius: 28px;
-            width: 100%; max-width: 400px; max-height: 60vh;
-            display: flex; flex-direction: column; padding: 22px;
-            
-            /* Эффект вылета снизу вверх */
-            transform: translateY(100px) scale(0.9);
-            transition: transform 0.4s cubic-bezier(0.15, 0.85, 0.45, 1);
+            background: rgba(255, 255, 255, 0.8); border: 1px solid var(--glass-border); box-shadow: 0 30px 60px rgba(0,0,0,0.15); border-radius: 28px;
+            width: 100%; max-width: 400px; max-height: 60vh; display: flex; flex-direction: column; padding: 22px; transform: translateY(100px) scale(0.9); transition: transform 0.4s cubic-bezier(0.15, 0.85, 0.45, 1);
         }
         .modal-overlay.active .modal-card { transform: translateY(0) scale(1); }
 
@@ -246,6 +229,9 @@
         let endNode = {x: 19, y: 19};
         let visitedArr = [], frontierArr = [], finalPath = [];
         let mediaRecorder, recordedChunks = [];
+
+        // Инициализация звукового движка победы
+        const winAudio = new Audio('win.mp3');
 
         const descriptions = {
             astar: "🧠 ИИ-Навигатор: оценивает расстояние до финиша по воздуху и сразу выбирает оптимальный вектор движения.",
@@ -500,12 +486,9 @@
             const overlay = document.getElementById('historyOverlay');
             document.getElementById('btnHistory').onclick = () => { buildHistoryDOM(); overlay.classList.add('active'); };
             document.getElementById('btnCloseHistory').onclick = () => overlay.classList.remove('active');
-            
-            // Закрытие тапом по фону
             overlay.onclick = (e) => { if(e.target === overlay) overlay.classList.remove('active'); }
         }
 
-        // Аппаратное исправление кнопки «Открыть» — Баг №3 Исправлен
         function buildHistoryDOM() {
             const container = document.getElementById('historyListContainer'); container.innerHTML = '';
             const list = JSON.parse(localStorage.getItem('maze_history_list') || '[]');
@@ -522,13 +505,11 @@
                     const targetId = parseInt(e.target.getAttribute('data-id'));
                     const sel = list.find(x => x.id === targetId);
                     if(sel) {
-                        // Поклеточное копирование карты
                         for(let x=0; x<COLS; x++) {
                             for(let y=0; y<ROWS; y++) {
                                 grid[x][y] = sel.gridState[x][y];
                             }
                         }
-                        // Жесткая мутация координат вместо подмены ссылок
                         if(sel.start) { startNode.x = sel.start.x; startNode.y = sel.start.y; }
                         if(sel.end) { endNode.x = sel.end.x; endNode.y = sel.end.y; }
                         
@@ -568,6 +549,11 @@
             else if (algo === 'bfs') await solveBFS();
             else if (algo === 'dfs') await solveDFS();
 
+            // Изменение логики видео: если финиш достигнут, ждем 2 секунды перед стопом
+            if (finalPath.length > 0) {
+                await sleep(2000);
+            }
+
             stopRecording();
             pushToHistory(currentAlgoText, visitedArr.length, finalPath.length);
             setUIDisabled(false);
@@ -576,7 +562,11 @@
         function tracePath(endInstance) {
             let curr = endInstance;
             while(curr !== null) { finalPath.unshift(curr); curr = curr.parent; }
-            document.getElementById('stat-path').innerText = finalPath.length; render();
+            document.getElementById('stat-path').innerText = finalPath.length; 
+            render();
+            
+            // Воспроизведение триггера победы win.mp3
+            winAudio.play().catch((err) => console.log("Аудио заблокировано политикой браузера до первого клика:", err));
         }
 
         async function solveAStar(isDijkstra) {
