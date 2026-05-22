@@ -18,6 +18,7 @@
             --text-muted: #475569;
             --ios-blue: #007aff;
             --ios-green: #34c759;
+            --ios-red: #ff3b30;
         }
 
         * {
@@ -38,6 +39,7 @@
             padding: 12px;
             gap: 10px;
             overflow: hidden;
+            position: relative;
         }
 
         /* Верхнее табло */
@@ -54,6 +56,12 @@
             align-items: center;
         }
 
+        .brand-zone {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         h1 {
             font-size: 1rem;
             font-weight: 700;
@@ -62,10 +70,21 @@
             -webkit-text-fill-color: transparent;
         }
 
+        .btn-history-trigger {
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0,0,0,0.02);
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
         .stats {
             display: flex;
-            gap: 12px;
-            font-size: 0.8rem;
+            gap: 10px;
+            font-size: 0.78rem;
             color: var(--text-muted);
         }
 
@@ -130,9 +149,34 @@
             padding: 6px 12px;
             border-radius: 10px;
             font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
         }
 
-        /* Капсульные переключатели (iOS-стайл) */
+        /* Кнопка сохранения видео прохождения */
+        .btn-video-download {
+            background: linear-gradient(135deg, #34c759 0%, #28a745 100%);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+            display: none; /* Появляется только после финиша ИИ */
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        /* Капсульные переключатели */
         .segmented-control {
             display: flex;
             background: rgba(0, 0, 0, 0.05);
@@ -184,10 +228,7 @@
             color: var(--text-main);
             cursor: pointer;
             flex: 1;
-            transition: transform 0.1s;
         }
-
-        button.action-btn:active { transform: scale(0.97); }
 
         /* Главная кнопка запуска */
         button.primary-launch {
@@ -203,8 +244,76 @@
             transition: all 0.2s;
         }
 
-        button.primary-launch:active { transform: scale(0.97); filter: brightness(1.1); }
+        button.primary-launch:active { transform: scale(0.97); }
         button:disabled, select:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
+
+        /* Модальное окно истории (Liquid Glass Overlay) */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-header h3 { font-size: 1.1rem; font-weight: 700; }
+        .modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--ios-red); font-weight: bold;}
+
+        .history-list {
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
+        }
+
+        .history-item {
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(0,0,0,0.03);
+            padding: 10px;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item-info span { display: block; color: var(--text-muted); font-size: 0.7rem; }
+        .btn-replay {
+            background: var(--ios-blue);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
 
         @media (min-width: 768px) {
             body { padding: 30px; gap: 20px; }
@@ -216,7 +325,10 @@
 <body>
 
     <header>
-        <h1>AI Explorer</h1>
+        <div class="brand-zone">
+            <h1>AI Explorer</h1>
+            <button id="btnHistory" class="btn-history-trigger">⏱ История</button>
+        </div>
         <div class="stats">
             <span>Изучено: <b id="stat-visited">0</b></span>
             <span>Путь: <b id="stat-path">0</b></span>
@@ -230,8 +342,9 @@
     </main>
 
     <div class="bottom-dock">
-        <div class="mode-description" id="modeDesc">
-            🧠 ИИ-Навигатор: оценивает расстояние до финиша по воздуху и сразу выбирает оптимальный вектор движения.
+        <div class="mode-description">
+            <span id="modeDesc">🧠 ИИ-Навигатор: оценивает расстояние до финиша по воздуху и сразу выбирает оптимальный вектор движения.</span>
+            <button id="btnSaveVideo" class="btn-video-download">📹 Скачать видео прохождения</button>
         </div>
 
         <div class="dock-row">
@@ -262,18 +375,30 @@
         <button id="btnLaunch" class="primary-launch">ЗАПУСТИТЬ МЫШЛЕНИЕ ИИ</button>
     </div>
 
+    <div id="historyOverlay" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Предыдущие запуски</h3>
+                <button class="modal-close" id="btnCloseHistory">✕</button>
+            </div>
+            <div class="history-list" id="historyListContainer">
+                </div>
+        </div>
+    </div>
+
     <script>
         const canvas = document.getElementById('mazeCanvas');
         const ctx = canvas.getContext('2d');
         const COLS = 21, ROWS = 21; 
         let cellSize = 0, grid = [], isDrawing = false, modeDrawWall = true, isRunning = false;
         
-        // Тайм-аут шага ИИ в миллисекундах (по умолчанию Нормально = 15мс)
         let aiDelay = 15; 
-
         const startNode = {x: 1, y: 1};
         const endNode = {x: 19, y: 19};
         let visitedArr = [], frontierArr = [], finalPath = [];
+
+        // Видеорекордер
+        let mediaRecorder, recordedChunks = [];
 
         const descriptions = {
             astar: "🧠 ИИ-Навигатор: оценивает расстояние до финиша по воздуху и сразу выбирает оптимальный вектор движения.",
@@ -282,15 +407,42 @@
             dfs: "🌀 ИИ-Следопыт: выбирает случайную ветку и бежит по ней до упора. Если там тупик — возвращается."
         };
 
-        document.getElementById('algoSelector').addEventListener('change', function(e) {
-            document.getElementById('modeDesc').innerText = descriptions[e.target.value];
-        });
+        // Загрузка/Сохранение настроек из localStorage
+        function saveConfig() {
+            const config = {
+                algo: document.getElementById('algoSelector').value,
+                delay: aiDelay,
+                tool: modeDrawWall
+            };
+            localStorage.setItem('maze_ai_config', JSON.stringify(config));
+        }
+
+        function loadConfig() {
+            const saved = localStorage.getItem('maze_ai_config');
+            if (saved) {
+                const config = JSON.parse(saved);
+                document.getElementById('algoSelector').value = config.algo;
+                document.getElementById('modeDesc').innerText = descriptions[config.algo];
+                aiDelay = config.delay;
+                modeDrawWall = config.tool;
+                
+                // Сброс классов активностей под конфиг
+                document.getElementById('spdSlow').classList.toggle('active', aiDelay === 60);
+                document.getElementById('spdNormal').classList.toggle('active', aiDelay === 15);
+                document.getElementById('spdFast').classList.toggle('active', aiDelay === 1);
+                
+                document.getElementById('toolWall').classList.toggle('active', modeDrawWall);
+                document.getElementById('toolErase').classList.toggle('active', !modeDrawWall);
+            }
+        }
 
         function init() {
             grid = Array(COLS).fill().map(() => Array(ROWS).fill(0));
             resize();
             setupInteractions();
             setupSpeedControls();
+            setupHistoryUI();
+            loadConfig();
         }
 
         function resize() {
@@ -316,19 +468,19 @@
                 }
             }
 
-            // Просмотренные ячейки
+            // Мысли ИИ
             ctx.fillStyle = 'rgba(147, 51, 234, 0.12)';
             for (let node of visitedArr) {
                 ctx.fillRect(node.x * cellSize, node.y * cellSize, cellSize, cellSize);
             }
 
-            // Фронтир мышления
+            // Направление поиска
             ctx.fillStyle = 'rgba(0, 122, 255, 0.3)';
             for (let node of frontierArr) {
                 ctx.fillRect(node.x * cellSize, node.y * cellSize, cellSize, cellSize);
             }
 
-            // Построенный путь
+            // Маршрут
             if (finalPath.length > 0) {
                 ctx.strokeStyle = '#34c759';
                 ctx.lineWidth = cellSize * 0.3;
@@ -342,7 +494,7 @@
                 ctx.stroke();
             }
 
-            // Точки старта и финиша
+            // Старт и Финиш
             ctx.fillStyle = '#007aff';
             ctx.beginPath(); ctx.arc(startNode.x * cellSize + cellSize / 2, startNode.y * cellSize + cellSize / 2, cellSize * 0.3, 0, Math.PI * 2); ctx.fill();
 
@@ -376,10 +528,14 @@
 
             document.getElementById('toolWall').addEventListener('click', function() {
                 modeDrawWall = true; this.classList.add('active'); document.getElementById('toolErase').classList.remove('active');
+                saveConfig();
             });
             document.getElementById('toolErase').addEventListener('click', function() {
                 modeDrawWall = false; this.classList.add('active'); document.getElementById('toolWall').classList.remove('active');
+                saveConfig();
             });
+
+            document.getElementById('algoSelector').addEventListener('change', saveConfig);
 
             document.getElementById('btnClear').addEventListener('click', () => {
                 if(isRunning) return;
@@ -391,27 +547,25 @@
             document.getElementById('btnLaunch').addEventListener('click', launchAI);
         }
 
-        // Логика управления скоростью
         function setupSpeedControls() {
             const btnSlow = document.getElementById('spdSlow');
             const btnNormal = document.getElementById('spdNormal');
             const btnFast = document.getElementById('spdFast');
 
             function clearActive() {
-                btnSlow.classList.remove('active');
-                btnNormal.classList.remove('active');
-                btnFast.classList.remove('active');
+                btnSlow.classList.remove('active'); btnNormal.classList.remove('active'); btnFast.classList.remove('active');
             }
 
-            btnSlow.addEventListener('click', () => { clearActive(); btnSlow.classList.add('active'); aiDelay = 60; });
-            btnNormal.addEventListener('click', () => { clearActive(); btnNormal.classList.add('active'); aiDelay = 15; });
-            btnFast.addEventListener('click', () => { clearActive(); btnFast.classList.add('active'); aiDelay = 1; }); // Почти моментально
+            btnSlow.addEventListener('click', () => { clearActive(); btnSlow.classList.add('active'); aiDelay = 60; saveConfig(); });
+            btnNormal.addEventListener('click', () => { clearActive(); btnNormal.classList.add('active'); aiDelay = 15; saveConfig(); });
+            btnFast.addEventListener('click', () => { clearActive(); btnFast.classList.add('active'); aiDelay = 1; saveConfig(); });
         }
 
         function resetAIStats() {
             visitedArr = []; frontierArr = []; finalPath = [];
             document.getElementById('stat-visited').innerText = '0';
             document.getElementById('stat-path').innerText = '0';
+            document.getElementById('btnSaveVideo').style.display = 'none';
             render();
         }
 
@@ -453,6 +607,95 @@
             render();
         }
 
+        // Логика захвата видео 1:1
+        function startRecording() {
+            recordedChunks = [];
+            const stream = canvas.captureStream(30); // Стабильные 30 FPS
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+            mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const videoURL = URL.createObjectURL(blob);
+                const downloadBtn = document.getElementById('btnSaveVideo');
+                downloadBtn.style.display = 'block';
+                downloadBtn.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = videoURL;
+                    a.download = `ai-passage-${Date.now()}.webm`;
+                    a.click();
+                };
+            };
+            mediaRecorder.start();
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+        }
+
+        // Работа с историей запусков
+        function pushToHistory(algoName, checkedNodes, routeLen) {
+            let list = JSON.parse(localStorage.getItem('maze_history_list') || '[]');
+            const record = {
+                id: Date.now(),
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                algo: algoName,
+                checked: checkedNodes,
+                route: routeLen,
+                gridState: JSON.parse(JSON.stringify(grid))
+            };
+            list.unshift(record);
+            if(list.length > 15) list.pop(); // Ограничим кэш до 15 записей
+            localStorage.setItem('maze_history_list', JSON.stringify(list));
+        }
+
+        function setupHistoryUI() {
+            const overlay = document.getElementById('historyOverlay');
+            document.getElementById('btnHistory').onclick = () => {
+                buildHistoryDOM();
+                overlay.style.display = 'flex';
+            };
+            document.getElementById('btnCloseHistory').onclick = () => overlay.style.display = 'none';
+        }
+
+        function buildHistoryDOM() {
+            const container = document.getElementById('historyListContainer');
+            container.innerHTML = '';
+            const list = JSON.parse(localStorage.getItem('maze_history_list') || '[]');
+
+            if(list.length === 0) {
+                container.innerHTML = '<div style="text-align:center; font-size:0.85rem; color:var(--text-muted); padding:20px;">История пуста</div>';
+                return;
+            }
+
+            list.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'history-item';
+                el.innerHTML = `
+                    <div class="history-item-info">
+                        <strong>${item.algo} [${item.time}]</strong>
+                        <span>Изучено: ${item.checked} | Путь: ${item.route}</span>
+                    </div>
+                    <button class="btn-replay" data-id="${item.id}">Загрузить</button>
+                `;
+                container.appendChild(el);
+            });
+
+            // Навешивание хэндлеров на загрузку карт из памяти
+            container.querySelectorAll('.btn-replay').forEach(btn => {
+                btn.onclick = (e) => {
+                    const targetId = parseInt(e.target.getAttribute('data-id'));
+                    const selected = list.find(x => x.id === targetId);
+                    if(selected) {
+                        grid = JSON.parse(JSON.stringify(selected.gridState));
+                        resetAIStats();
+                        document.getElementById('historyOverlay').style.display = 'none';
+                    }
+                };
+            });
+        }
+
         function getValidNeighbors(node) {
             let res = [];
             let dirs = [{x:0,y:-1}, {x:1,y:0}, {x:0,y:1}, {x:-1,y:0}];
@@ -479,13 +722,19 @@
             if (isRunning) return;
             setUIDisabled(true);
             resetAIStats();
+            startRecording(); // Запуск видеозаписи
 
             const algo = document.getElementById('algoSelector').value;
+            const selectEl = document.getElementById('algoSelector');
+            const currentAlgoText = selectEl.options[selectEl.selectedIndex].text.split(' ')[1];
+
             if (algo === 'astar') await solveAStar(false);
             else if (algo === 'dijkstra') await solveAStar(true);
             else if (algo === 'bfs') await solveBFS();
             else if (algo === 'dfs') await solveDFS();
 
+            stopRecording(); // Стоп видео
+            pushToHistory(currentAlgoText, visitedArr.length, finalPath.length);
             setUIDisabled(false);
         }
 
@@ -529,7 +778,7 @@
                 frontierArr = openSet.map(o => ({x: o.x, y: o.y}));
                 document.getElementById('stat-visited').innerText = visitedArr.length;
                 render();
-                await sleep(aiDelay); // Динамическая скорость
+                await sleep(aiDelay);
             }
         }
 
@@ -588,3 +837,4 @@
     </script>
 </body>
 </html>
+ 
