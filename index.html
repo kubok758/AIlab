@@ -3,29 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AI Maze Pro — Liquid Glass</title>
+    <title>AI Maze Explorer Pro — Liquid Glass</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#f0f4f8">
+    <meta name="theme-color" content="#f1f5f9">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Maze Glass">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
     <style>
         :root {
-            --liquid-bg: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
-            --glass-base: rgba(255, 255, 255, 0.45);
+            --liquid-bg: linear-gradient(145deg, #e2e8f0 0%, #cbd5e1 100%);
+            --glass: rgba(255, 255, 255, 0.45);
             --glass-border: rgba(255, 255, 255, 0.6);
-            --glass-glow: rgba(255, 255, 255, 0.8);
-            --text-main: #1c1c1e;
-            --text-muted: #66666e;
-            --accent-blue: #007aff;
-            --accent-green: #34c759;
-            --accent-red: #ff3b30;
-            
-            /* Цвета сетки */
-            --color-wall: #2c3e50;
-            --color-visited: rgba(142, 68, 173, 0.15);
-            --color-frontier: rgba(52, 152, 219, 0.4);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --ios-blue: #007aff;
+            --ios-green: #34c759;
         }
 
         * {
@@ -34,40 +26,37 @@
             padding: 0;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
         }
 
         body {
             background: var(--liquid-bg);
-            background-attachment: fixed;
-            color: var(--text-main);
             height: 100vh;
-            display: flex;
-            flex-direction: column;
+            height: 100dvh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            padding: 12px;
+            gap: 10px;
             overflow: hidden;
-            padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* Парящий верхний заголовок */
+        /* Верхнее табло */
         header {
-            margin: 15px 15px 5px 15px;
-            padding: 14px 20px;
-            background: var(--glass-base);
-            backdrop-filter: blur(30px) saturate(190%);
-            -webkit-backdrop-filter: blur(30px) saturate(190%);
+            padding: 10px 16px;
+            background: var(--glass);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.04), inset 0 1px 0 var(--glass-glow);
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.02), inset 0 1px 1px white;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 10;
         }
 
         h1 {
-            font-size: 1.15rem;
+            font-size: 1rem;
             font-weight: 700;
-            letter-spacing: -0.02em;
             background: linear-gradient(135deg, #007aff, #5856d6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -75,199 +64,162 @@
 
         .stats {
             display: flex;
-            gap: 16px;
-            font-size: 0.85rem;
-            font-weight: 500;
+            gap: 12px;
+            font-size: 0.8rem;
             color: var(--text-muted);
         }
 
-        .stats b {
-            color: var(--text-main);
-            font-weight: 600;
-        }
+        .stats b { color: var(--text-main); font-weight: 600; }
 
-        /* Интерактивная область */
+        /* Игровая зона */
         main {
-            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 15px;
-            position: relative;
-            z-index: 1;
+            min-height: 0;
+            width: 100%;
         }
 
         .canvas-container {
-            width: 100%;
-            max-width: 550px;
+            max-width: 100%;
+            max-height: 100%;
             aspect-ratio: 1/1;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
             border: 1px solid rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(10px);
-            border-radius: 28px;
-            padding: 10px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.03);
+            border-radius: 24px;
+            padding: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         canvas {
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.85);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.9);
             max-width: 100%;
             max-height: 100%;
-            cursor: crosshair;
         }
 
-        /* Элементы управления: ПОДВАЛ / BOTTOM DOCK (Стиль iOS 26) */
+        /* Нижний Док управления Liquid Glass */
         .bottom-dock {
-            margin: 5px 15px 15px 15px;
             padding: 12px;
             background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(40px) saturate(200%);
-            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            backdrop-filter: blur(35px) saturate(190%);
+            -webkit-backdrop-filter: blur(35px) saturate(190%);
             border: 1px solid var(--glass-border);
-            border-radius: 32px;
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255,255,255,0.6);
+            border-radius: 28px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.04), inset 0 1px 1px rgba(255,255,255,0.8);
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            z-index: 10;
+            gap: 10px;
         }
 
         .dock-row {
             display: flex;
             gap: 8px;
-            width: 100%;
+            align-items: center;
         }
 
-        /* Капсульные переключатели и кнопки */
+        .mode-description {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+            background: rgba(0,0,0,0.03);
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        /* Капсульные переключатели (iOS-стайл) */
         .segmented-control {
             display: flex;
-            background: rgba(0, 0, 0, 0.04);
-            padding: 3px;
-            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 2px;
+            border-radius: 14px;
             flex: 1;
-            position: relative;
         }
 
         .segmented-control button {
             flex: 1;
             border: none;
             background: transparent;
-            padding: 8px 4px;
+            padding: 8px 2px;
             font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-muted);
-            border-radius: 13px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .segmented-control button.active {
             background: #ffffff;
             color: var(--text-main);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.02);
-            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         select {
             appearance: none;
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(0,0,0,0.05);
-            padding: 10px 16px;
-            border-radius: 16px;
-            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0,0,0,0.03);
+            padding: 8px 12px;
+            border-radius: 14px;
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-main);
-            flex: 1;
+            flex: 1.2;
             text-align: center;
-            box-shadow: inset 0 1px 0 white;
             outline: none;
         }
 
         button.action-btn {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(255,255,255,0.7);
-            padding: 10px 14px;
-            border-radius: 16px;
-            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0,0,0,0.01);
+            padding: 9px;
+            border-radius: 14px;
+            font-size: 0.78rem;
             font-weight: 600;
             color: var(--text-main);
             cursor: pointer;
             flex: 1;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02), inset 0 1px 0 white;
+            transition: transform 0.1s;
         }
 
-        button.action-btn:active {
-            transform: scale(0.97);
-            background: rgba(255, 255, 255, 0.4);
-        }
+        button.action-btn:active { transform: scale(0.97); }
 
-        /* Главная кнопка Liquid Launch */
+        /* Главная кнопка запуска */
         button.primary-launch {
             background: linear-gradient(135deg, #007aff 0%, #0056b3 100%);
-            color: #ffffff;
+            color: white;
             border: none;
-            padding: 14px;
-            border-radius: 18px;
-            font-size: 0.95rem;
+            padding: 12px;
+            border-radius: 16px;
+            font-size: 0.9rem;
             font-weight: 700;
-            letter-spacing: 0.02em;
             cursor: pointer;
-            width: 100%;
-            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3), inset 0 1px 1px rgba(255,255,255,0.3);
-            transition: all 0.3s cubic-bezier(0.15, 0.85, 0.45, 1);
-            text-transform: uppercase;
+            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.25);
+            transition: all 0.2s;
         }
 
-        button.primary-launch:active {
-            transform: scale(0.96);
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
-            filter: brightness(1.1);
-        }
+        button.primary-launch:active { transform: scale(0.97); filter: brightness(1.1); }
+        button:disabled, select:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
 
-        button:disabled, select:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        /* Адаптивность для больших экранов (iPad / Desktop) */
         @media (min-width: 768px) {
-            body {
-                flex-direction: row;
-                padding: 20px;
-                gap: 20px;
-            }
-            header {
-                position: absolute; top: 20px; left: 20px; right: 20px; margin: 0;
-            }
-            main {
-                margin-top: 60px;
-                justify-content: center;
-            }
-            .bottom-dock {
-                position: absolute;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 600px;
-                margin: 0;
-            }
+            body { padding: 30px; gap: 20px; }
+            .bottom-dock { width: 500px; margin: 0 auto; }
+            .canvas-container { max-width: 500px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>AI Maze Explorer</h1>
+        <h1>AI Explorer</h1>
         <div class="stats">
-            <span>Проверено: <b id="stat-visited">0</b></span>
-            <span>Маршрут: <b id="stat-path">0</b></span>
+            <span>Изучено: <b id="stat-visited">0</b></span>
+            <span>Путь: <b id="stat-path">0</b></span>
         </div>
     </header>
 
@@ -278,6 +230,10 @@
     </main>
 
     <div class="bottom-dock">
+        <div class="mode-description" id="modeDesc">
+            🧠 ИИ-Навигатор: оценивает расстояние до финиша по воздуху и сразу выбирает оптимальный вектор движения.
+        </div>
+
         <div class="dock-row">
             <div class="segmented-control">
                 <button id="toolWall" class="active">Стена</button>
@@ -285,46 +241,61 @@
             </div>
             
             <select id="algoSelector">
-                <option value="astar">🤖 A* (Эвристика)</option>
-                <option value="dijkstra">📊 Dijkstra (Графы)</option>
-                <option value="bfs">🌊 BFS (В ширину)</option>
-                <option value="dfs">🌲 DFS (В глубину)</option>
+                <option value="astar">🧠 ИИ-Навигатор (A*)</option>
+                <option value="dijkstra">🔍 Мудрый ИИ (Dijkstra)</option>
+                <option value="bfs">🌊 ИИ-Волна (BFS)</option>
+                <option value="dfs">🌀 ИИ-Следопыт (DFS)</option>
             </select>
         </div>
 
         <div class="dock-row">
-            <button id="btnGenerate" class="action-btn">Сгенерировать</button>
+            <div class="segmented-control" style="flex: 1.1;">
+                <button id="spdSlow">🐢</button>
+                <button id="spdNormal" class="active">⚡</button>
+                <button id="spdFast">🚀</button>
+            </div>
+            
+            <button id="btnGenerate" class="action-btn">Создать</button>
             <button id="btnClear" class="action-btn">Очистить</button>
         </div>
 
-        <button id="btnLaunch" class="primary-launch">Запустить мысль ИИ</button>
+        <button id="btnLaunch" class="primary-launch">ЗАПУСТИТЬ МЫШЛЕНИЕ ИИ</button>
     </div>
 
     <script>
-        // Инициализация PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(()=>{}); });
-        }
-
         const canvas = document.getElementById('mazeCanvas');
         const ctx = canvas.getContext('2d');
-        const COLS = 23, ROWS = 23; 
+        const COLS = 21, ROWS = 21; 
         let cellSize = 0, grid = [], isDrawing = false, modeDrawWall = true, isRunning = false;
         
+        // Тайм-аут шага ИИ в миллисекундах (по умолчанию Нормально = 15мс)
+        let aiDelay = 15; 
+
         const startNode = {x: 1, y: 1};
-        const endNode = {x: 21, y: 21};
-        
+        const endNode = {x: 19, y: 19};
         let visitedArr = [], frontierArr = [], finalPath = [];
+
+        const descriptions = {
+            astar: "🧠 ИИ-Навигатор: оценивает расстояние до финиша по воздуху и сразу выбирает оптимальный вектор движения.",
+            dijkstra: "🔍 Мудрый ИИ: методично проверяет абсолютно все варианты вокруг себя, гарантируя идеальный маршрут.",
+            bfs: "🌊 ИИ-Волна: симулирует поток воды, заполняющий лабиринт во все стороны одновременно.",
+            dfs: "🌀 ИИ-Следопыт: выбирает случайную ветку и бежит по ней до упора. Если там тупик — возвращается."
+        };
+
+        document.getElementById('algoSelector').addEventListener('change', function(e) {
+            document.getElementById('modeDesc').innerText = descriptions[e.target.value];
+        });
 
         function init() {
             grid = Array(COLS).fill().map(() => Array(ROWS).fill(0));
             resize();
             setupInteractions();
+            setupSpeedControls();
         }
 
         function resize() {
             const container = canvas.parentElement;
-            const sizeValue = Math.min(container.clientWidth, container.clientHeight) - 20;
+            const sizeValue = Math.min(container.clientWidth, container.clientHeight) - 12;
             canvas.width = canvas.height = sizeValue;
             cellSize = sizeValue / COLS;
             render();
@@ -333,34 +304,34 @@
         function render() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Отрисовка Стен
-            ctx.fillStyle = '#2c3e50';
+            // Стены
+            ctx.fillStyle = '#334155';
             for (let x = 0; x < COLS; x++) {
                 for (let y = 0; y < ROWS; y++) {
                     if (grid[x][y] === 1) {
                         ctx.beginPath();
-                        ctx.roundRect(x * cellSize + 0.5, y * cellSize + 0.5, cellSize - 1, cellSize - 1, cellSize * 0.25);
+                        ctx.roundRect(x * cellSize + 1, y * cellSize + 1, cellSize - 2, cellSize - 2, cellSize * 0.2);
                         ctx.fill();
                     }
                 }
             }
 
-            // Отрисовка Мышления ИИ (Visited)
-            ctx.fillStyle = 'rgba(142, 68, 173, 0.15)';
+            // Просмотренные ячейки
+            ctx.fillStyle = 'rgba(147, 51, 234, 0.12)';
             for (let node of visitedArr) {
                 ctx.fillRect(node.x * cellSize, node.y * cellSize, cellSize, cellSize);
             }
 
-            // Отрисовка Границы поиска (Frontier)
-            ctx.fillStyle = 'rgba(52, 152, 219, 0.35)';
+            // Фронтир мышления
+            ctx.fillStyle = 'rgba(0, 122, 255, 0.3)';
             for (let node of frontierArr) {
                 ctx.fillRect(node.x * cellSize, node.y * cellSize, cellSize, cellSize);
             }
 
-            // Отрисовка Пути
+            // Построенный путь
             if (finalPath.length > 0) {
                 ctx.strokeStyle = '#34c759';
-                ctx.lineWidth = cellSize * 0.35;
+                ctx.lineWidth = cellSize * 0.3;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 ctx.beginPath();
@@ -371,17 +342,12 @@
                 ctx.stroke();
             }
 
-            // Маркеры Старта и Финиша (Liquid стеклянные точки)
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = 'rgba(0,122,255,0.4)';
+            // Точки старта и финиша
             ctx.fillStyle = '#007aff';
-            ctx.beginPath(); ctx.arc(startNode.x * cellSize + cellSize / 2, startNode.y * cellSize + cellSize / 2, cellSize * 0.35, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(startNode.x * cellSize + cellSize / 2, startNode.y * cellSize + cellSize / 2, cellSize * 0.3, 0, Math.PI * 2); ctx.fill();
 
-            ctx.shadowColor = 'rgba(255,59,48,0.4)';
             ctx.fillStyle = '#ff3b30';
-            ctx.beginPath(); ctx.arc(endNode.x * cellSize + cellSize / 2, endNode.y * cellSize + cellSize / 2, cellSize * 0.35, 0, Math.PI * 2); ctx.fill();
-            
-            ctx.shadowBlur = 0; // Сброс тени
+            ctx.beginPath(); ctx.arc(endNode.x * cellSize + cellSize / 2, endNode.y * cellSize + cellSize / 2, cellSize * 0.3, 0, Math.PI * 2); ctx.fill();
         }
 
         function setupInteractions() {
@@ -408,7 +374,6 @@
             canvas.addEventListener('touchmove', (e) => { if (isDrawing) pointerAction(e); e.preventDefault(); }, {passive: false});
             window.addEventListener('touchend', () => isDrawing = false);
 
-            // Обработчики дока режима
             document.getElementById('toolWall').addEventListener('click', function() {
                 modeDrawWall = true; this.classList.add('active'); document.getElementById('toolErase').classList.remove('active');
             });
@@ -426,6 +391,23 @@
             document.getElementById('btnLaunch').addEventListener('click', launchAI);
         }
 
+        // Логика управления скоростью
+        function setupSpeedControls() {
+            const btnSlow = document.getElementById('spdSlow');
+            const btnNormal = document.getElementById('spdNormal');
+            const btnFast = document.getElementById('spdFast');
+
+            function clearActive() {
+                btnSlow.classList.remove('active');
+                btnNormal.classList.remove('active');
+                btnFast.classList.remove('active');
+            }
+
+            btnSlow.addEventListener('click', () => { clearActive(); btnSlow.classList.add('active'); aiDelay = 60; });
+            btnNormal.addEventListener('click', () => { clearActive(); btnNormal.classList.add('active'); aiDelay = 15; });
+            btnFast.addEventListener('click', () => { clearActive(); btnFast.classList.add('active'); aiDelay = 1; }); // Почти моментально
+        }
+
         function resetAIStats() {
             visitedArr = []; frontierArr = []; finalPath = [];
             document.getElementById('stat-visited').innerText = '0';
@@ -433,7 +415,6 @@
             render();
         }
 
-        // Генерация лабиринта (Алгоритм Recursive Backtracker)
         function generateMaze() {
             if (isRunning) return;
             resetAIStats();
@@ -469,12 +450,9 @@
                     break;
                 }
             }
-            grid[startNode.x][startNode.y] = 0;
-            grid[endNode.x][endNode.y] = 0;
             render();
         }
 
-        // Вспомогательные функции ИИ
         function getValidNeighbors(node) {
             let res = [];
             let dirs = [{x:0,y:-1}, {x:1,y:0}, {x:0,y:1}, {x:-1,y:0}];
@@ -497,7 +475,6 @@
             document.getElementById('algoSelector').disabled = state;
         }
 
-        // Архитектура движка ИИ
         async function launchAI() {
             if (isRunning) return;
             setUIDisabled(true);
@@ -505,7 +482,7 @@
 
             const algo = document.getElementById('algoSelector').value;
             if (algo === 'astar') await solveAStar(false);
-            else if (algo === 'dijkstra') await solveAStar(true); // Дийкстра это А* без эвристики h=0
+            else if (algo === 'dijkstra') await solveAStar(true);
             else if (algo === 'bfs') await solveBFS();
             else if (algo === 'dfs') await solveDFS();
 
@@ -522,7 +499,6 @@
             render();
         }
 
-        // Алгоритмы поиска пути
         async function solveAStar(isDijkstra) {
             let openSet = [{...startNode, g: 0, f: 0, parent: null}];
             let closedSet = new Set();
@@ -553,7 +529,7 @@
                 frontierArr = openSet.map(o => ({x: o.x, y: o.y}));
                 document.getElementById('stat-visited').innerText = visitedArr.length;
                 render();
-                await sleep(15);
+                await sleep(aiDelay); // Динамическая скорость
             }
         }
 
@@ -577,7 +553,7 @@
                 frontierArr = [...queue];
                 document.getElementById('stat-visited').innerText = visitedArr.length;
                 render();
-                await sleep(10);
+                await sleep(aiDelay);
             }
         }
 
@@ -603,7 +579,7 @@
                 frontierArr = [...stack];
                 document.getElementById('stat-visited').innerText = visitedArr.length;
                 render();
-                await sleep(20);
+                await sleep(aiDelay);
             }
         }
 
@@ -612,4 +588,3 @@
     </script>
 </body>
 </html>
- 
