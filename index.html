@@ -1,27 +1,31 @@
-index.html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Maze Mind — Симулятор ИИ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>AI Maze Pro — Liquid Glass</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#f0f4f8">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Maze Glass">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
     <style>
         :root {
-            --bg-main: #0f172a;
-            --bg-card: #1e293b;
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.5);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --wall: #334155;
-            --thinking: rgba(139, 92, 246, 0.4);
-            --frontier: rgba(34, 211, 238, 0.6);
-            --path: #10b981;
+            --liquid-bg: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            --glass-base: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-glow: rgba(255, 255, 255, 0.8);
+            --text-main: #1c1c1e;
+            --text-muted: #66666e;
+            --accent-blue: #007aff;
+            --accent-green: #34c759;
+            --accent-red: #ff3b30;
+            
+            /* Цвета сетки */
+            --color-wall: #2c3e50;
+            --color-visited: rgba(142, 68, 173, 0.15);
+            --color-frontier: rgba(52, 152, 219, 0.4);
         }
 
         * {
@@ -30,34 +34,41 @@ index.html
             padding: 0;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
         }
 
         body {
-            background-color: var(--bg-main);
+            background: var(--liquid-bg);
+            background-attachment: fixed;
             color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden;
             height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
+        /* Парящий верхний заголовок */
         header {
-            background: var(--bg-card);
-            padding: 12px 20px;
+            margin: 15px 15px 5px 15px;
+            padding: 14px 20px;
+            background: var(--glass-base);
+            backdrop-filter: blur(30px) saturate(190%);
+            -webkit-backdrop-filter: blur(30px) saturate(190%);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.04), inset 0 1px 0 var(--glass-glow);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
             z-index: 10;
         }
 
         h1 {
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             font-weight: 700;
-            letter-spacing: -0.025em;
-            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #007aff, #5856d6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -66,154 +77,197 @@ index.html
             display: flex;
             gap: 16px;
             font-size: 0.85rem;
+            font-weight: 500;
             color: var(--text-muted);
         }
 
-        .stats span strong {
+        .stats b {
             color: var(--text-main);
+            font-weight: 600;
         }
 
+        /* Интерактивная область */
         main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            height: calc(100vh - 120px);
-        }
-
-        @media (min-width: 768px) {
-            main {
-                flex-direction: row;
-            }
-        }
-
-        .canvas-container {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 16px;
+            padding: 15px;
             position: relative;
+            z-index: 1;
+        }
+
+        .canvas-container {
+            width: 100%;
+            max-width: 550px;
+            aspect-ratio: 1/1;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         canvas {
-            background: #020617;
-            border-radius: 12px;
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
             max-width: 100%;
             max-height: 100%;
-            aspect-ratio: 1 / 1;
             cursor: crosshair;
         }
 
-        .controls {
-            background: var(--bg-card);
-            padding: 16px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            border-top: 1px solid rgba(255,255,255,0.05);
+        /* Элементы управления: ПОДВАЛ / BOTTOM DOCK (Стиль iOS 26) */
+        .bottom-dock {
+            margin: 5px 15px 15px 15px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255,255,255,0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             z-index: 10;
         }
 
-        @media (min-width: 768px) {
-            .controls {
-                width: 320px;
-                grid-template-columns: 1fr;
-                border-top: none;
-                border-left: 1px solid rgba(255,255,255,0.05);
-                padding: 24px;
-                align-content: start;
-                gap: 16px;
-            }
-        }
-
-        .control-group {
+        .dock-row {
             display: flex;
-            flex-direction: column;
-            gap: 6px;
-            grid-column: span 2;
-        }
-
-        @media (min-width: 768px) {
-            .control-group { grid-column: span 1; }
-        }
-
-        label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        select, button {
-            background: #1e293b;
-            color: var(--text-main);
-            border: 1px solid #334155;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            outline: none;
-            transition: all 0.2s;
+            gap: 8px;
             width: 100%;
-            font-weight: 500;
         }
 
-        select:focus, button:hover:not(:disabled) {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px var(--accent-glow);
-        }
-
-        button.primary {
-            background: var(--accent);
-            border-color: transparent;
-            color: white;
-            grid-column: span 2;
-        }
-
-        @media (min-width: 768px) {
-            button.primary { grid-column: span 1; }
-        }
-
-        button.primary:hover:not(:disabled) {
-            background: #2563eb;
-        }
-
-        button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .toggle-container {
+        /* Капсульные переключатели и кнопки */
+        .segmented-control {
             display: flex;
-            background: #0f172a;
-            padding: 4px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-        }
-
-        .toggle-btn {
-            background: transparent;
-            border: none;
-            padding: 6px;
-            font-size: 0.8rem;
+            background: rgba(0, 0, 0, 0.04);
+            padding: 3px;
+            border-radius: 16px;
             flex: 1;
+            position: relative;
         }
 
-        .toggle-btn.active {
-            background: var(--accent);
-            color: white;
+        .segmented-control button {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 8px 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .segmented-control button.active {
+            background: #ffffff;
+            color: var(--text-main);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.02);
+            transform: scale(1.02);
+        }
+
+        select {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0,0,0,0.05);
+            padding: 10px 16px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            flex: 1;
+            text-align: center;
+            box-shadow: inset 0 1px 0 white;
+            outline: none;
+        }
+
+        button.action-btn {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255,255,255,0.7);
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02), inset 0 1px 0 white;
+        }
+
+        button.action-btn:active {
+            transform: scale(0.97);
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Главная кнопка Liquid Launch */
+        button.primary-launch {
+            background: linear-gradient(135deg, #007aff 0%, #0056b3 100%);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3), inset 0 1px 1px rgba(255,255,255,0.3);
+            transition: all 0.3s cubic-bezier(0.15, 0.85, 0.45, 1);
+            text-transform: uppercase;
+        }
+
+        button.primary-launch:active {
+            transform: scale(0.96);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+            filter: brightness(1.1);
+        }
+
+        button:disabled, select:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Адаптивность для больших экранов (iPad / Desktop) */
+        @media (min-width: 768px) {
+            body {
+                flex-direction: row;
+                padding: 20px;
+                gap: 20px;
+            }
+            header {
+                position: absolute; top: 20px; left: 20px; right: 20px; margin: 0;
+            }
+            main {
+                margin-top: 60px;
+                justify-content: center;
+            }
+            .bottom-dock {
+                position: absolute;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 600px;
+                margin: 0;
+            }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>AI Maze Mind</h1>
+        <h1>AI Maze Explorer</h1>
         <div class="stats">
-            <span>Шаги: <strong id="stat-steps">0</strong></span>
-            <span>Путь: <strong id="stat-path">0</strong></span>
+            <span>Проверено: <b id="stat-visited">0</b></span>
+            <span>Маршрут: <b id="stat-path">0</b></span>
         </div>
     </header>
 
@@ -221,320 +275,297 @@ index.html
         <div class="canvas-container">
             <canvas id="mazeCanvas"></canvas>
         </div>
-
-        <div class="controls">
-            <div class="control-group">
-                <label>Алгоритм ИИ</label>
-                <select id="algoSelect">
-                    <option value="astar">A* Search (Оптимальный)</option>
-                    <option value="bfs">BFS (Поиск в ширину)</option>
-                    <option value="dfs">DFS (Поиск в глубину)</option>
-                </select>
-            </div>
-
-            <div class="control-group">
-                <label>Режим касания / мыши</label>
-                <div class="toggle-container">
-                    <button class="toggle-btn active" id="modeDraw">Стена</button>
-                    <button class="toggle-btn" id="modeErase">Стереть</button>
-                </div>
-            </div>
-
-            <button id="btnGen" type="button">Сгенерировать лабиринт</button>
-            <button id="btnClear" type="button">Очистить</button>
-            <button id="btnStart" class="primary" type="button">Запустить ИИ</button>
-        </div>
     </main>
 
+    <div class="bottom-dock">
+        <div class="dock-row">
+            <div class="segmented-control">
+                <button id="toolWall" class="active">Стена</button>
+                <button id="toolErase">Ластик</button>
+            </div>
+            
+            <select id="algoSelector">
+                <option value="astar">🤖 A* (Эвристика)</option>
+                <option value="dijkstra">📊 Dijkstra (Графы)</option>
+                <option value="bfs">🌊 BFS (В ширину)</option>
+                <option value="dfs">🌲 DFS (В глубину)</option>
+            </select>
+        </div>
+
+        <div class="dock-row">
+            <button id="btnGenerate" class="action-btn">Сгенерировать</button>
+            <button id="btnClear" class="action-btn">Очистить</button>
+        </div>
+
+        <button id="btnLaunch" class="primary-launch">Запустить мысль ИИ</button>
+    </div>
+
     <script>
-        // Регистрация Service Worker для PWA
+        // Инициализация PWA
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(err => console.log(err));
-            });
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(()=>{}); });
         }
 
         const canvas = document.getElementById('mazeCanvas');
         const ctx = canvas.getContext('2d');
+        const COLS = 23, ROWS = 23; 
+        let cellSize = 0, grid = [], isDrawing = false, modeDrawWall = true, isRunning = false;
         
-        // Настройки сетки (нечетные числа идеальны для генераторов лабиринтов)
-        const COLS = 25;
-        const ROWS = 25;
-        let cellSize = 0;
-        
-        // Состояния ячеек
-        const EMPTY = 0;
-        const WALL = 1;
-        
-        let grid = Array(COLS).fill().map(() => Array(ROWS).fill(EMPTY));
-        
-        // Начальная и конечная точки
         const startNode = {x: 1, y: 1};
-        const endNode = {x: COLS - 2, y: ROWS - 2};
+        const endNode = {x: 21, y: 21};
         
-        let isDrawing = false;
-        let drawMode = WALL; // WALL или EMPTY
-        let isRunning = false;
-        
-        // Массивы визуализации ИИ
-        let visitedVisual = []; 
-        let frontierVisual = [];
-        let finalPath = [];
+        let visitedArr = [], frontierArr = [], finalPath = [];
 
-        // Инициализация размеров
-        function resizeCanvas() {
-            const container = canvas.parentElement;
-            const size = Math.min(container.clientWidth, container.clientHeight, 600) - 32;
-            canvas.width = size;
-            canvas.height = size;
-            cellSize = size / COLS;
-            draw();
+        function init() {
+            grid = Array(COLS).fill().map(() => Array(ROWS).fill(0));
+            resize();
+            setupInteractions();
         }
 
-        window.addEventListener('resize', resizeCanvas);
-        setTimeout(resizeCanvas, 50);
+        function resize() {
+            const container = canvas.parentElement;
+            const sizeValue = Math.min(container.clientWidth, container.clientHeight) - 20;
+            canvas.width = canvas.height = sizeValue;
+            cellSize = sizeValue / COLS;
+            render();
+        }
 
-        // Рендеринг сцены
-        function draw() {
+        function render() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Отрисовка базовой сетки / стен
-            for(let x=0; x<COLS; x++) {
-                for(let y=0; y<ROWS; y++) {
-                    if(grid[x][y] === WALL) {
-                        ctx.fillStyle = '#334155';
-                        ctx.fillRect(x*cellSize, y*cellSize, cellSize+0.5, cellSize+0.5);
+            // Отрисовка Стен
+            ctx.fillStyle = '#2c3e50';
+            for (let x = 0; x < COLS; x++) {
+                for (let y = 0; y < ROWS; y++) {
+                    if (grid[x][y] === 1) {
+                        ctx.beginPath();
+                        ctx.roundRect(x * cellSize + 0.5, y * cellSize + 0.5, cellSize - 1, cellSize - 1, cellSize * 0.25);
+                        ctx.fill();
                     }
                 }
             }
 
-            // Отрисовка "размышлений" ИИ (просмотренные клетки)
-            ctx.fillStyle = 'rgba(139, 92, 246, 0.25)';
-            for(let node of visitedVisual) {
-                ctx.fillRect(node.x*cellSize, node.y*cellSize, cellSize, cellSize);
+            // Отрисовка Мышления ИИ (Visited)
+            ctx.fillStyle = 'rgba(142, 68, 173, 0.15)';
+            for (let node of visitedArr) {
+                ctx.fillRect(node.x * cellSize, node.y * cellSize, cellSize, cellSize);
             }
 
-            // Отрисовка текущего фронтира (границы поиска)
-            ctx.fillStyle = 'rgba(34, 211, 238, 0.5)';
-            for(let node of frontierVisual) {
-                ctx.fillRect(node.x*cellSize, node.y*cellSize, cellSize, cellSize);
+            // Отрисовка Границы поиска (Frontier)
+            ctx.fillStyle = 'rgba(52, 152, 219, 0.35)';
+            for (let node of frontierArr) {
+                ctx.fillRect(node.x * cellSize, node.y * cellSize, cellSize, cellSize);
             }
 
-            // Отрисовка финального пути
-            if(finalPath.length > 0) {
-                ctx.strokeStyle = '#10b981';
-                ctx.lineWidth = cellSize * 0.4;
+            // Отрисовка Пути
+            if (finalPath.length > 0) {
+                ctx.strokeStyle = '#34c759';
+                ctx.lineWidth = cellSize * 0.35;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 ctx.beginPath();
-                ctx.moveTo(startNode.x*cellSize + cellSize/2, startNode.y*cellSize + cellSize/2);
-                for(let node of finalPath) {
-                    ctx.lineTo(node.x*cellSize + cellSize/2, node.y*cellSize + cellSize/2);
+                ctx.moveTo(startNode.x * cellSize + cellSize / 2, startNode.y * cellSize + cellSize / 2);
+                for (let node of finalPath) {
+                    ctx.lineTo(node.x * cellSize + cellSize / 2, node.y * cellSize + cellSize / 2);
                 }
                 ctx.stroke();
             }
 
-            // Старт и Финиш
-            ctx.fillStyle = '#3b82f6';
-            ctx.beginPath(); ctx.arc(startNode.x*cellSize+cellSize/2, startNode.y*cellSize+cellSize/2, cellSize*0.35, 0, Math.PI*2); ctx.fill();
+            // Маркеры Старта и Финиша (Liquid стеклянные точки)
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = 'rgba(0,122,255,0.4)';
+            ctx.fillStyle = '#007aff';
+            ctx.beginPath(); ctx.arc(startNode.x * cellSize + cellSize / 2, startNode.y * cellSize + cellSize / 2, cellSize * 0.35, 0, Math.PI * 2); ctx.fill();
+
+            ctx.shadowColor = 'rgba(255,59,48,0.4)';
+            ctx.fillStyle = '#ff3b30';
+            ctx.beginPath(); ctx.arc(endNode.x * cellSize + cellSize / 2, endNode.y * cellSize + cellSize / 2, cellSize * 0.35, 0, Math.PI * 2); ctx.fill();
             
-            ctx.fillStyle = '#ef4444';
-            ctx.beginPath(); ctx.arc(endNode.x*cellSize+cellSize/2, endNode.y*cellSize+cellSize/2, cellSize*0.35, 0, Math.PI*2); ctx.fill();
+            ctx.shadowBlur = 0; // Сброс тени
         }
 
-        // Логика взаимодействия (мышь и тач)
-        function handlePointer(e) {
-            if(isRunning) return;
-            const rect = canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            
-            const x = Math.floor((clientX - rect.left) / cellSize);
-            const y = Math.floor((clientY - rect.top) / cellSize);
+        function setupInteractions() {
+            function pointerAction(e) {
+                if (isRunning) return;
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const x = Math.floor((clientX - rect.left) / cellSize);
+                const y = Math.floor((clientY - rect.top) / cellSize);
 
-            if(x >= 0 && x < COLS && y >= 0 && y < ROWS) {
-                if((x === startNode.x && y === startNode.y) || (x === endNode.x && y === endNode.y)) return;
-                grid[x][y] = drawMode;
-                draw();
+                if (x >= 0 && x < COLS && y >= 0 && y < ROWS) {
+                    if ((x === startNode.x && y === startNode.y) || (x === endNode.x && y === endNode.y)) return;
+                    grid[x][y] = modeDrawWall ? 1 : 0;
+                    resetAIStats();
+                }
             }
+
+            canvas.addEventListener('mousedown', (e) => { isDrawing = true; pointerAction(e); });
+            canvas.addEventListener('mousemove', (e) => { if (isDrawing) pointerAction(e); });
+            window.addEventListener('mouseup', () => isDrawing = false);
+
+            canvas.addEventListener('touchstart', (e) => { isDrawing = true; pointerAction(e); e.preventDefault(); }, {passive: false});
+            canvas.addEventListener('touchmove', (e) => { if (isDrawing) pointerAction(e); e.preventDefault(); }, {passive: false});
+            window.addEventListener('touchend', () => isDrawing = false);
+
+            // Обработчики дока режима
+            document.getElementById('toolWall').addEventListener('click', function() {
+                modeDrawWall = true; this.classList.add('active'); document.getElementById('toolErase').classList.remove('active');
+            });
+            document.getElementById('toolErase').addEventListener('click', function() {
+                modeDrawWall = false; this.classList.add('active'); document.getElementById('toolWall').classList.remove('active');
+            });
+
+            document.getElementById('btnClear').addEventListener('click', () => {
+                if(isRunning) return;
+                grid = Array(COLS).fill().map(() => Array(ROWS).fill(0));
+                resetAIStats();
+            });
+
+            document.getElementById('btnGenerate').addEventListener('click', generateMaze);
+            document.getElementById('btnLaunch').addEventListener('click', launchAI);
         }
 
-        canvas.addEventListener('mousedown', (e) => { isDrawing = true; handlePointer(e); });
-        canvas.addEventListener('mousemove', (e) => { if(isDrawing) handlePointer(e); });
-        window.addEventListener('mouseup', () => isDrawing = false);
-
-        canvas.addEventListener('touchstart', (e) => { isDrawing = true; handlePointer(e); e.preventDefault(); }, {passive: false});
-        canvas.addEventListener('touchmove', (e) => { if(isDrawing) handlePointer(e); e.preventDefault(); }, {passive: false});
-        window.addEventListener('touchend', () => isDrawing = false);
-
-        // Переключатели режимов
-        document.getElementById('modeDraw').addEventListener('click', function() {
-            drawMode = WALL; this.classList.add('active'); document.getElementById('modeErase').classList.remove('active');
-        });
-        document.getElementById('modeErase').addEventListener('click', function() {
-            drawMode = EMPTY; this.classList.add('active'); document.getElementById('modeDraw').classList.remove('active');
-        });
-
-        document.getElementById('btnClear').addEventListener('click', () => {
-            if(isRunning) return;
-            grid = Array(COLS).fill().map(() => Array(ROWS).fill(EMPTY));
-            resetAI();
-        });
-
-        function resetAI() {
-            visitedVisual = []; frontierVisual = []; finalPath = [];
-            document.getElementById('stat-steps').innerText = '0';
+        function resetAIStats() {
+            visitedArr = []; frontierArr = []; finalPath = [];
+            document.getElementById('stat-visited').innerText = '0';
             document.getElementById('stat-path').innerText = '0';
-            draw();
+            render();
         }
 
-        // Генератор идеального лабиринта (Recursive Backtracker)
-        document.getElementById('btnGen').addEventListener('click', () => {
-            if(isRunning) return;
-            resetAI();
-            
-            // Заполняем всё стенами
-            for(let x=0; x<COLS; x++) for(let y=0; y<ROWS; y++) grid[x][y] = WALL;
+        // Генерация лабиринта (Алгоритм Recursive Backtracker)
+        function generateMaze() {
+            if (isRunning) return;
+            resetAIStats();
+            for (let x = 0; x < COLS; x++) for (let y = 0; y < ROWS; y++) grid[x][y] = 1;
 
             let stack = [];
             let current = {x: 1, y: 1};
-            grid[current.x][current.y] = EMPTY;
+            grid[current.x][current.y] = 0;
 
-            function getNeighbors(cell) {
-                let neighbors = [];
+            function getNeighbors(c) {
+                let n = [];
                 let dirs = [{x:0, y:-2}, {x:0, y:2}, {x:-2, y:0}, {x:2, y:0}];
                 for(let d of dirs) {
-                    let nx = cell.x + d.x;
-                    let ny = cell.y + d.y;
-                    if(nx > 0 && nx < COLS-1 && ny > 0 && ny < ROWS-1 && grid[nx][ny] === WALL) {
-                        neighbors.push({x: nx, y: ny, wallX: cell.x + d.x/2, wallY: cell.y + d.y/2});
+                    let nx = c.x + d.x, ny = c.y + d.y;
+                    if(nx > 0 && nx < COLS-1 && ny > 0 && ny < ROWS-1 && grid[nx][ny] === 1) {
+                        n.push({x: nx, y: ny, wx: c.x + d.x/2, wy: c.y + d.y/2});
                     }
                 }
-                return neighbors;
+                return n;
             }
 
-            // Быстрая синхронная генерация структуры
-            while(true) {
+            while (true) {
                 let neighbors = getNeighbors(current);
-                if(neighbors.length > 0) {
+                if (neighbors.length > 0) {
                     let next = neighbors[Math.floor(Math.random() * neighbors.length)];
-                    grid[next.wallX][next.wallY] = EMPTY;
-                    grid[next.x][next.y] = EMPTY;
+                    grid[next.wx][next.wy] = 0;
+                    grid[next.x][next.y] = 0;
                     stack.push(current);
                     current = next;
-                } else if(stack.length > 0) {
+                } else if (stack.length > 0) {
                     current = stack.pop();
                 } else {
                     break;
                 }
             }
-            grid[startNode.x][startNode.y] = EMPTY;
-            grid[endNode.x][endNode.y] = EMPTY;
-            draw();
-        });
-
-        // ИИ — Движок поиска пути
-        document.getElementById('btnStart').addEventListener('click', async () => {
-            if(isRunning) return;
-            isRunning = true;
-            resetAI();
-            toggleControls(true);
-
-            const algo = document.getElementById('algoSelect').value;
-            
-            if(algo === 'bfs') await solveBFS();
-            else if(algo === 'dfs') await solveDFS();
-            else if(algo === 'astar') await solveAStar();
-
-            isRunning = false;
-            toggleControls(false);
-        });
-
-        function toggleControls(disabled) {
-            document.getElementById('btnStart').disabled = disabled;
-            document.getElementById('btnGen').disabled = disabled;
-            document.getElementById('btnClear').disabled = disabled;
-            document.getElementById('algoSelect').disabled = disabled;
+            grid[startNode.x][startNode.y] = 0;
+            grid[endNode.x][endNode.y] = 0;
+            render();
         }
 
-        const sleep = (ms) => new Promise(res => setTimeout(res, ms));
-
+        // Вспомогательные функции ИИ
         function getValidNeighbors(node) {
             let res = [];
             let dirs = [{x:0,y:-1}, {x:1,y:0}, {x:0,y:1}, {x:-1,y:0}];
             for(let d of dirs) {
-                let nx = node.x + d.x;
-                let ny = node.y + d.y;
-                if(nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS && grid[nx][ny] !== WALL) {
+                let nx = node.x + d.x, ny = node.y + d.y;
+                if(nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS && grid[nx][ny] !== 1) {
                     res.push({x: nx, y: ny});
                 }
             }
             return res;
         }
 
-        // Реализация алгоритма A*
-        async function solveAStar() {
-            let openSet = [{...startNode, g: 0, f: h(startNode), parent: null}];
-            let closedSet = new Set();
+        const sleep = (ms) => new Promise(res => setTimeout(res, ms));
 
-            function h(node) {
-                return Math.abs(node.x - endNode.x) + Math.abs(node.y - endNode.y); // Манхэттенское расстояние
+        function setUIDisabled(state) {
+            isRunning = state;
+            document.getElementById('btnLaunch').disabled = state;
+            document.getElementById('btnGenerate').disabled = state;
+            document.getElementById('btnClear').disabled = state;
+            document.getElementById('algoSelector').disabled = state;
+        }
+
+        // Архитектура движка ИИ
+        async function launchAI() {
+            if (isRunning) return;
+            setUIDisabled(true);
+            resetAIStats();
+
+            const algo = document.getElementById('algoSelector').value;
+            if (algo === 'astar') await solveAStar(false);
+            else if (algo === 'dijkstra') await solveAStar(true); // Дийкстра это А* без эвристики h=0
+            else if (algo === 'bfs') await solveBFS();
+            else if (algo === 'dfs') await solveDFS();
+
+            setUIDisabled(false);
+        }
+
+        function tracePath(endInstance) {
+            let curr = endInstance;
+            while(curr !== null) {
+                finalPath.unshift(curr);
+                curr = curr.parent;
             }
+            document.getElementById('stat-path').innerText = finalPath.length;
+            render();
+        }
+
+        // Алгоритмы поиска пути
+        async function solveAStar(isDijkstra) {
+            let openSet = [{...startNode, g: 0, f: 0, parent: null}];
+            let closedSet = new Set();
+            let h = (n) => isDijkstra ? 0 : Math.abs(n.x - endNode.x) + Math.abs(n.y - endNode.y);
+
+            openSet[0].f = h(startNode);
 
             while(openSet.length > 0) {
                 openSet.sort((a,b) => a.f - b.f);
                 let current = openSet.shift();
                 
-                if(current.x === endNode.x && current.y === endNode.y) {
-                    reconstructPath(current);
-                    return;
-                }
+                if(current.x === endNode.x && current.y === endNode.y) { tracePath(current); return; }
 
-                let key = `${current.x},${current.y}`;
-                closedSet.add(key);
-                visitedVisual.push(current);
+                closedSet.add(`${current.x},${current.y}`);
+                visitedArr.push(current);
 
                 for(let neighbor of getValidNeighbors(current)) {
                     if(closedSet.has(`${neighbor.x},${neighbor.y}`)) continue;
-                    
-                    let tentativeG = current.g + 1;
+                    let tentG = current.g + 1;
                     let existing = openSet.find(o => o.x === neighbor.x && o.y === neighbor.y);
 
                     if(!existing) {
-                        let nNode = {
-                            x: neighbor.x, y: neighbor.y, 
-                            g: tentativeG, f: tentativeG + h(neighbor), 
-                            parent: current
-                        };
-                        openSet.push(nNode);
-                    } else if(tentativeG < existing.g) {
-                        existing.g = tentativeG;
-                        existing.f = tentativeG + h(existing);
-                        existing.parent = current;
+                        openSet.push({x: neighbor.x, y: neighbor.y, g: tentG, f: tentG + h(neighbor), parent: current});
+                    } else if(tentG < existing.g) {
+                        existing.g = tentG; existing.f = tentG + h(existing); existing.parent = current;
                     }
                 }
-
-                frontierVisual = openSet.map(o => ({x: o.x, y: o.y}));
-                document.getElementById('stat-steps').innerText = visitedVisual.length;
-                draw();
+                frontierArr = openSet.map(o => ({x: o.x, y: o.y}));
+                document.getElementById('stat-visited').innerText = visitedArr.length;
+                render();
                 await sleep(15);
             }
         }
 
-        // Реализация BFS
         async function solveBFS() {
             let queue = [{...startNode, parent: null}];
             let visited = new Set([`${startNode.x},${startNode.y}`]);
 
             while(queue.length > 0) {
                 let current = queue.shift();
-
-                if(current.x === endNode.x && current.y === endNode.y) {
-                    reconstructPath(current);
-                    return;
-                }
-
-                visitedVisual.push(current);
+                if(current.x === endNode.x && current.y === endNode.y) { tracePath(current); return; }
+                
+                visitedArr.push(current);
 
                 for(let neighbor of getValidNeighbors(current)) {
                     let key = `${neighbor.x},${neighbor.y}`;
@@ -543,15 +574,13 @@ index.html
                         queue.push({...neighbor, parent: current});
                     }
                 }
-
-                frontierVisual = [...queue];
-                document.getElementById('stat-steps').innerText = visitedVisual.length;
-                draw();
+                frontierArr = [...queue];
+                document.getElementById('stat-visited').innerText = visitedArr.length;
+                render();
                 await sleep(10);
             }
         }
 
-        // Реализация DFS
         async function solveDFS() {
             let stack = [{...startNode, parent: null}];
             let visited = new Set();
@@ -562,36 +591,25 @@ index.html
 
                 if(visited.has(key)) continue;
                 visited.add(key);
-                visitedVisual.push(current);
+                visitedArr.push(current);
 
-                if(current.x === endNode.x && current.y === endNode.y) {
-                    reconstructPath(current);
-                    return;
-                }
+                if(current.x === endNode.x && current.y === endNode.y) { tracePath(current); return; }
 
                 for(let neighbor of getValidNeighbors(current)) {
                     if(!visited.has(`${neighbor.x},${neighbor.y}`)) {
                         stack.push({...neighbor, parent: current});
                     }
                 }
-
-                frontierVisual = [...stack];
-                document.getElementById('stat-steps').innerText = visitedVisual.length;
-                draw();
-                await sleep(25); // Задержка чуть выше, так как DFS идет по одной ветке
+                frontierArr = [...stack];
+                document.getElementById('stat-visited').innerText = visitedArr.length;
+                render();
+                await sleep(20);
             }
         }
 
-        function reconstructPath(endNodeInstance) {
-            let curr = endNodeInstance;
-            while(curr !== null) {
-                finalPath.unshift(curr);
-                curr = curr.parent;
-            }
-            document.getElementById('stat-path').innerText = finalPath.length;
-            draw();
-        }
+        window.addEventListener('resize', resize);
+        window.addEventListener('load', init);
     </script>
 </body>
 </html>
-
+ 
