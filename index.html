@@ -39,10 +39,8 @@
             padding: 12px;
             gap: 10px;
             overflow: hidden;
-            position: relative;
         }
 
-        /* Верхнее табло */
         header {
             padding: 10px 16px;
             background: var(--glass);
@@ -56,19 +54,8 @@
             align-items: center;
         }
 
-        .brand-zone {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        h1 {
-            font-size: 1rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #007aff, #5856d6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .brand-zone { display: flex; align-items: center; gap: 8px; }
+        h1 { font-size: 1rem; font-weight: 700; background: linear-gradient(135deg, #007aff, #5856d6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .btn-history-trigger {
             background: rgba(0, 0, 0, 0.04);
@@ -81,23 +68,10 @@
             cursor: pointer;
         }
 
-        .stats {
-            display: flex;
-            gap: 10px;
-            font-size: 0.78rem;
-            color: var(--text-muted);
-        }
-
+        .stats { display: flex; gap: 10px; font-size: 0.78rem; color: var(--text-muted); }
         .stats b { color: var(--text-main); font-weight: 600; }
 
-        /* Игровая зона */
-        main {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 0;
-            width: 100%;
-        }
+        main { display: flex; align-items: center; justify-content: center; min-height: 0; width: 100%; }
 
         .canvas-container {
             max-width: 100%;
@@ -114,14 +88,8 @@
             justify-content: center;
         }
 
-        canvas {
-            border-radius: 18px;
-            background: rgba(255, 255, 255, 0.9);
-            max-width: 100%;
-            max-height: 100%;
-        }
+        canvas { border-radius: 18px; background: rgba(255, 255, 255, 0.9); max-width: 100%; max-height: 100%; }
 
-        /* Нижний Док управления Liquid Glass */
         .bottom-dock {
             padding: 12px;
             background: rgba(255, 255, 255, 0.5);
@@ -135,11 +103,7 @@
             gap: 10px;
         }
 
-        .dock-row {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
+        .dock-row { display: flex; gap: 8px; align-items: center; }
 
         .mode-description {
             font-size: 0.75rem;
@@ -155,171 +119,46 @@
             gap: 6px;
         }
 
-        /* Кнопка сохранения видео прохождения */
         .btn-video-download {
             background: linear-gradient(135deg, #34c759 0%, #28a745 100%);
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 10px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
-            display: none; /* Появляется только после финиша ИИ */
-            animation: pulseGlow 2s infinite;
+            color: white; border: none; padding: 6px 14px; border-radius: 10px;
+            font-size: 0.75rem; font-weight: 700; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3); display: none;
         }
 
-        @keyframes pulseGlow {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-            100% { transform: scale(1); }
-        }
-
-        /* Капсульные переключатели */
-        .segmented-control {
-            display: flex;
-            background: rgba(0, 0, 0, 0.05);
-            padding: 2px;
-            border-radius: 14px;
-            flex: 1;
-        }
-
+        .segmented-control { display: flex; background: rgba(0, 0, 0, 0.05); padding: 2px; border-radius: 14px; flex: 1; }
         .segmented-control button {
-            flex: 1;
-            border: none;
-            background: transparent;
-            padding: 8px 2px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            flex: 1; border: none; background: transparent; padding: 8px 2px;
+            font-size: 0.8rem; font-weight: 600; color: var(--text-muted); border-radius: 12px; cursor: pointer;
         }
-
-        .segmented-control button.active {
-            background: #ffffff;
-            color: var(--text-main);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
+        .segmented-control button.active { background: #ffffff; color: var(--text-main); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
         select {
-            appearance: none;
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(0,0,0,0.03);
-            padding: 8px 12px;
-            border-radius: 14px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-main);
-            flex: 1.2;
-            text-align: center;
-            outline: none;
+            appearance: none; background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0,0,0,0.03);
+            padding: 8px 12px; border-radius: 14px; font-size: 0.8rem; font-weight: 600; color: var(--text-main); flex: 1.2; text-align: center; outline: none;
         }
 
-        button.action-btn {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(0,0,0,0.01);
-            padding: 9px;
-            border-radius: 14px;
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: var(--text-main);
-            cursor: pointer;
-            flex: 1;
-        }
+        button.action-btn { background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(0,0,0,0.01); padding: 9px; border-radius: 14px; font-size: 0.78rem; font-weight: 600; color: var(--text-main); cursor: pointer; flex: 1; }
 
-        /* Главная кнопка запуска */
         button.primary-launch {
             background: linear-gradient(135deg, #007aff 0%, #0056b3 100%);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 16px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.25);
-            transition: all 0.2s;
+            color: white; border: none; padding: 12px; border-radius: 16px; font-size: 0.9rem; font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px rgba(0, 122, 255, 0.25); transition: all 0.2s;
         }
-
         button.primary-launch:active { transform: scale(0.97); }
         button:disabled, select:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
 
-        /* Модальное окно истории (Liquid Glass Overlay) */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 100;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-card {
-            background: rgba(255, 255, 255, 0.75);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            border-radius: 24px;
-            width: 100%;
-            max-width: 400px;
-            max-height: 70vh;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
+        /* Окна истории */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-card { background: rgba(255, 255, 255, 0.75); border: 1px solid var(--glass-border); box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 24px; width: 100%; max-width: 400px; max-height: 70vh; display: flex; flex-direction: column; padding: 20px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .modal-header h3 { font-size: 1.1rem; font-weight: 700; }
         .modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--ios-red); font-weight: bold;}
-
-        .history-list {
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding-right: 4px;
-        }
-
-        .history-item {
-            background: rgba(255,255,255,0.5);
-            border: 1px solid rgba(0,0,0,0.03);
-            padding: 10px;
-            border-radius: 14px;
-            font-size: 0.8rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
+        .history-list { overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .history-item { background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.03); padding: 10px; border-radius: 14px; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center; }
         .history-item-info span { display: block; color: var(--text-muted); font-size: 0.7rem; }
-        .btn-replay {
-            background: var(--ios-blue);
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
+        .btn-replay { background: var(--ios-blue); color: white; border: none; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
 
-        @media (min-width: 768px) {
-            body { padding: 30px; gap: 20px; }
-            .bottom-dock { width: 500px; margin: 0 auto; }
-            .canvas-container { max-width: 500px; }
-        }
+        @media (min-width: 768px) { body { padding: 30px; gap: 20px; } .bottom-dock { width: 500px; margin: 0 auto; } .canvas-container { max-width: 500px; } }
     </style>
 </head>
 <body>
@@ -343,7 +182,7 @@
 
     <div class="bottom-dock">
         <div class="mode-description">
-            <span id="modeDesc">🧠 ИИ-Навигатор: оценивает расстояние до финиша по воздуху и сразу выбирает оптимальный вектор движения.</span>
+            <span id="modeDesc">🧠 ИИ-Навигатор: оценивает расстояние до финиша по воздуху и сразу выбирает оптимальный вектор движения. Удерживайте и тащите точки СТАРТ/ФИНИШ для переноса.</span>
             <button id="btnSaveVideo" class="btn-video-download">📹 Скачать видео прохождения</button>
         </div>
 
@@ -381,8 +220,7 @@
                 <h3>Предыдущие запуски</h3>
                 <button class="modal-close" id="btnCloseHistory">✕</button>
             </div>
-            <div class="history-list" id="historyListContainer">
-                </div>
+            <div class="history-list" id="historyListContainer"></div>
         </div>
     </div>
 
@@ -392,12 +230,14 @@
         const COLS = 21, ROWS = 21; 
         let cellSize = 0, grid = [], isDrawing = false, modeDrawWall = true, isRunning = false;
         
-        let aiDelay = 15; 
-        const startNode = {x: 1, y: 1};
-        const endNode = {x: 19, y: 19};
-        let visitedArr = [], frontierArr = [], finalPath = [];
+        // Переменные для перетаскивания точек
+        let isDraggingStart = false;
+        let isDraggingEnd = false;
 
-        // Видеорекордер
+        let aiDelay = 15; 
+        let startNode = {x: 1, y: 1};
+        let endNode = {x: 19, y: 19};
+        let visitedArr = [], frontierArr = [], finalPath = [];
         let mediaRecorder, recordedChunks = [];
 
         const descriptions = {
@@ -407,14 +247,14 @@
             dfs: "🌀 ИИ-Следопыт: выбирает случайную ветку и бежит по ней до упора. Если там тупик — возвращается."
         };
 
-        // Загрузка/Сохранение настроек из localStorage
         function saveConfig() {
-            const config = {
+            localStorage.setItem('maze_ai_config', JSON.stringify({
                 algo: document.getElementById('algoSelector').value,
                 delay: aiDelay,
-                tool: modeDrawWall
-            };
-            localStorage.setItem('maze_ai_config', JSON.stringify(config));
+                tool: modeDrawWall,
+                start: startNode,
+                end: endNode
+            }));
         }
 
         function loadConfig() {
@@ -422,15 +262,15 @@
             if (saved) {
                 const config = JSON.parse(saved);
                 document.getElementById('algoSelector').value = config.algo;
-                document.getElementById('modeDesc').innerText = descriptions[config.algo];
+                document.getElementById('modeDesc').innerText = descriptions[config.algo] + " Удерживайте и тащите точки СТАРТ/ФИНИШ для переноса.";
                 aiDelay = config.delay;
                 modeDrawWall = config.tool;
+                if(config.start) startNode = config.start;
+                if(config.end) endNode = config.end;
                 
-                // Сброс классов активностей под конфиг
                 document.getElementById('spdSlow').classList.toggle('active', aiDelay === 60);
                 document.getElementById('spdNormal').classList.toggle('active', aiDelay === 15);
                 document.getElementById('spdFast').classList.toggle('active', aiDelay === 1);
-                
                 document.getElementById('toolWall').classList.toggle('active', modeDrawWall);
                 document.getElementById('toolErase').classList.toggle('active', !modeDrawWall);
             }
@@ -455,8 +295,6 @@
 
         function render() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Стены
             ctx.fillStyle = '#334155';
             for (let x = 0; x < COLS; x++) {
                 for (let y = 0; y < ROWS; y++) {
@@ -468,81 +306,98 @@
                 }
             }
 
-            // Мысли ИИ
             ctx.fillStyle = 'rgba(147, 51, 234, 0.12)';
-            for (let node of visitedArr) {
-                ctx.fillRect(node.x * cellSize, node.y * cellSize, cellSize, cellSize);
-            }
+            for (let node of visitedArr) ctx.fillRect(node.x * cellSize, node.y * cellSize, cellSize, cellSize);
 
-            // Направление поиска
             ctx.fillStyle = 'rgba(0, 122, 255, 0.3)';
-            for (let node of frontierArr) {
-                ctx.fillRect(node.x * cellSize, node.y * cellSize, cellSize, cellSize);
-            }
+            for (let node of frontierArr) ctx.fillRect(node.x * cellSize, node.y * cellSize, cellSize, cellSize);
 
-            // Маршрут
             if (finalPath.length > 0) {
-                ctx.strokeStyle = '#34c759';
-                ctx.lineWidth = cellSize * 0.3;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.beginPath();
+                ctx.strokeStyle = '#34c759'; ctx.lineWidth = cellSize * 0.3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath();
                 ctx.moveTo(startNode.x * cellSize + cellSize / 2, startNode.y * cellSize + cellSize / 2);
-                for (let node of finalPath) {
-                    ctx.lineTo(node.x * cellSize + cellSize / 2, node.y * cellSize + cellSize / 2);
-                }
+                for (let node of finalPath) ctx.lineTo(node.x * cellSize + cellSize / 2, node.y * cellSize + cellSize / 2);
                 ctx.stroke();
             }
 
-            // Старт и Финиш
-            ctx.fillStyle = '#007aff';
-            ctx.beginPath(); ctx.arc(startNode.x * cellSize + cellSize / 2, startNode.y * cellSize + cellSize / 2, cellSize * 0.3, 0, Math.PI * 2); ctx.fill();
-
-            ctx.fillStyle = '#ff3b30';
-            ctx.beginPath(); ctx.arc(endNode.x * cellSize + cellSize / 2, endNode.y * cellSize + cellSize / 2, cellSize * 0.3, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#007aff'; ctx.beginPath(); ctx.arc(startNode.x * cellSize + cellSize / 2, startNode.y * cellSize + cellSize / 2, cellSize * 0.35, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#ff3b30'; ctx.beginPath(); ctx.arc(endNode.x * cellSize + cellSize / 2, endNode.y * cellSize + cellSize / 2, cellSize * 0.35, 0, Math.PI * 2); ctx.fill();
         }
 
         function setupInteractions() {
-            function pointerAction(e) {
-                if (isRunning) return;
+            function getCellCoords(e) {
                 const rect = canvas.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                const x = Math.floor((clientX - rect.left) / cellSize);
-                const y = Math.floor((clientY - rect.top) / cellSize);
+                return {
+                    x: Math.floor((clientX - rect.left) / cellSize),
+                    y: Math.floor((clientY - rect.top) / cellSize)
+                };
+            }
 
-                if (x >= 0 && x < COLS && y >= 0 && y < ROWS) {
-                    if ((x === startNode.x && y === startNode.y) || (x === endNode.x && y === endNode.y)) return;
-                    grid[x][y] = modeDrawWall ? 1 : 0;
+            function pointerDown(e) {
+                if (isRunning) return;
+                const cell = getCellCoords(e);
+                if (cell.x >= 0 && cell.x < COLS && cell.y >= 0 && cell.y < ROWS) {
+                    if (cell.x === startNode.x && cell.y === startNode.y) {
+                        isDraggingStart = true;
+                    } else if (cell.x === endNode.x && cell.y === endNode.y) {
+                        isDraggingEnd = true;
+                    } else {
+                        isDrawing = true;
+                        grid[cell.x][cell.y] = modeDrawWall ? 1 : 0;
+                    }
                     resetAIStats();
                 }
             }
 
-            canvas.addEventListener('mousedown', (e) => { isDrawing = true; pointerAction(e); });
-            canvas.addEventListener('mousemove', (e) => { if (isDrawing) pointerAction(e); });
-            window.addEventListener('mouseup', () => isDrawing = false);
+            function pointerMove(e) {
+                if (isRunning) return;
+                if (!isDrawing && !isDraggingStart && !isDraggingEnd) return;
+                const cell = getCellCoords(e);
+                
+                if (cell.x >= 0 && cell.x < COLS && cell.y >= 0 && cell.y < ROWS) {
+                    if (isDraggingStart) {
+                        if (cell.x !== endNode.x || cell.y !== endNode.y) {
+                            startNode.x = cell.x; startNode.y = cell.y;
+                            grid[cell.x][cell.y] = 0; // Стираем стену под точкой
+                        }
+                    } else if (isDraggingEnd) {
+                        if (cell.x !== startNode.x || cell.y !== startNode.y) {
+                            endNode.x = cell.x; endNode.y = cell.y;
+                            grid[cell.x][cell.y] = 0; // Стираем стену под точкой
+                        }
+                    } else if (isDrawing) {
+                        if ((cell.x === startNode.x && cell.y === startNode.y) || (cell.x === endNode.x && cell.y === endNode.y)) return;
+                        grid[cell.x][cell.y] = modeDrawWall ? 1 : 0;
+                    }
+                    resetAIStats();
+                }
+            }
 
-            canvas.addEventListener('touchstart', (e) => { isDrawing = true; pointerAction(e); e.preventDefault(); }, {passive: false});
-            canvas.addEventListener('touchmove', (e) => { if (isDrawing) pointerAction(e); e.preventDefault(); }, {passive: false});
-            window.addEventListener('touchend', () => isDrawing = false);
+            function pointerUp() {
+                if(isDraggingStart || isDraggingEnd) saveConfig();
+                isDrawing = isDraggingStart = isDraggingEnd = false;
+            }
+
+            canvas.addEventListener('mousedown', pointerDown);
+            canvas.addEventListener('mousemove', pointerMove);
+            window.addEventListener('mouseup', pointerUp);
+
+            canvas.addEventListener('touchstart', (e) => { pointerDown(e); e.preventDefault(); }, {passive: false});
+            canvas.addEventListener('touchmove', (e) => { pointerMove(e); e.preventDefault(); }, {passive: false});
+            window.addEventListener('touchend', pointerUp);
 
             document.getElementById('toolWall').addEventListener('click', function() {
-                modeDrawWall = true; this.classList.add('active'); document.getElementById('toolErase').classList.remove('active');
-                saveConfig();
+                modeDrawWall = true; this.classList.add('active'); document.getElementById('toolErase').classList.remove('active'); saveConfig();
             });
             document.getElementById('toolErase').addEventListener('click', function() {
-                modeDrawWall = false; this.classList.add('active'); document.getElementById('toolWall').classList.remove('active');
-                saveConfig();
+                modeDrawWall = false; this.classList.add('active'); document.getElementById('toolWall').classList.remove('active'); saveConfig();
             });
-
             document.getElementById('algoSelector').addEventListener('change', saveConfig);
-
             document.getElementById('btnClear').addEventListener('click', () => {
                 if(isRunning) return;
-                grid = Array(COLS).fill().map(() => Array(ROWS).fill(0));
-                resetAIStats();
+                grid = Array(COLS).fill().map(() => Array(ROWS).fill(0)); resetAIStats();
             });
-
             document.getElementById('btnGenerate').addEventListener('click', generateMaze);
             document.getElementById('btnLaunch').addEventListener('click', launchAI);
         }
@@ -551,11 +406,7 @@
             const btnSlow = document.getElementById('spdSlow');
             const btnNormal = document.getElementById('spdNormal');
             const btnFast = document.getElementById('spdFast');
-
-            function clearActive() {
-                btnSlow.classList.remove('active'); btnNormal.classList.remove('active'); btnFast.classList.remove('active');
-            }
-
+            function clearActive() { btnSlow.classList.remove('active'); btnNormal.classList.remove('active'); btnFast.classList.remove('active'); }
             btnSlow.addEventListener('click', () => { clearActive(); btnSlow.classList.add('active'); aiDelay = 60; saveConfig(); });
             btnNormal.addEventListener('click', () => { clearActive(); btnNormal.classList.add('active'); aiDelay = 15; saveConfig(); });
             btnFast.addEventListener('click', () => { clearActive(); btnFast.classList.add('active'); aiDelay = 1; saveConfig(); });
@@ -573,14 +424,10 @@
             if (isRunning) return;
             resetAIStats();
             for (let x = 0; x < COLS; x++) for (let y = 0; y < ROWS; y++) grid[x][y] = 1;
-
-            let stack = [];
-            let current = {x: 1, y: 1};
-            grid[current.x][current.y] = 0;
+            let stack = []; let current = {x: 1, y: 1}; grid[current.x][current.y] = 0;
 
             function getNeighbors(c) {
-                let n = [];
-                let dirs = [{x:0, y:-2}, {x:0, y:2}, {x:-2, y:0}, {x:2, y:0}];
+                let n = []; let dirs = [{x:0, y:-2}, {x:0, y:2}, {x:-2, y:0}, {x:2, y:0}];
                 for(let d of dirs) {
                     let nx = c.x + d.x, ny = c.y + d.y;
                     if(nx > 0 && nx < COLS-1 && ny > 0 && ny < ROWS-1 && grid[nx][ny] === 1) {
@@ -594,23 +441,17 @@
                 let neighbors = getNeighbors(current);
                 if (neighbors.length > 0) {
                     let next = neighbors[Math.floor(Math.random() * neighbors.length)];
-                    grid[next.wx][next.wy] = 0;
-                    grid[next.x][next.y] = 0;
-                    stack.push(current);
-                    current = next;
-                } else if (stack.length > 0) {
-                    current = stack.pop();
-                } else {
-                    break;
-                }
+                    grid[next.wx][next.wy] = 0; grid[next.x][next.y] = 0;
+                    stack.push(current); current = next;
+                } else if (stack.length > 0) { current = stack.pop(); } else { break; }
             }
+            grid[startNode.x][startNode.y] = 0; grid[endNode.x][endNode.y] = 0;
             render();
         }
 
-        // Логика захвата видео 1:1
         function startRecording() {
             recordedChunks = [];
-            const stream = canvas.captureStream(30); // Стабильные 30 FPS
+            const stream = canvas.captureStream(30);
             mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
             mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
             mediaRecorder.onstop = () => {
@@ -619,111 +460,75 @@
                 const downloadBtn = document.getElementById('btnSaveVideo');
                 downloadBtn.style.display = 'block';
                 downloadBtn.onclick = () => {
-                    const a = document.createElement('a');
-                    a.href = videoURL;
-                    a.download = `ai-passage-${Date.now()}.webm`;
-                    a.click();
+                    const a = document.createElement('a'); a.href = videoURL; a.download = `ai-run-${Date.now()}.webm`; a.click();
                 };
             };
             mediaRecorder.start();
         }
 
-        function stopRecording() {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
-        }
+        function stopRecording() { if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop(); }
 
-        // Работа с историей запусков
         function pushToHistory(algoName, checkedNodes, routeLen) {
             let list = JSON.parse(localStorage.getItem('maze_history_list') || '[]');
-            const record = {
+            list.unshift({
                 id: Date.now(),
                 time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-                algo: algoName,
-                checked: checkedNodes,
-                route: routeLen,
-                gridState: JSON.parse(JSON.stringify(grid))
-            };
-            list.unshift(record);
-            if(list.length > 15) list.pop(); // Ограничим кэш до 15 записей
+                algo: algoName, checked: checkedNodes, route: routeLen,
+                gridState: JSON.parse(JSON.stringify(grid)), start: {...startNode}, end: {...endNode}
+            });
+            if(list.length > 15) list.pop();
             localStorage.setItem('maze_history_list', JSON.stringify(list));
         }
 
         function setupHistoryUI() {
             const overlay = document.getElementById('historyOverlay');
-            document.getElementById('btnHistory').onclick = () => {
-                buildHistoryDOM();
-                overlay.style.display = 'flex';
-            };
+            document.getElementById('btnHistory').onclick = () => { buildHistoryDOM(); overlay.style.display = 'flex'; };
             document.getElementById('btnCloseHistory').onclick = () => overlay.style.display = 'none';
         }
 
         function buildHistoryDOM() {
-            const container = document.getElementById('historyListContainer');
-            container.innerHTML = '';
+            const container = document.getElementById('historyListContainer'); container.innerHTML = '';
             const list = JSON.parse(localStorage.getItem('maze_history_list') || '[]');
-
-            if(list.length === 0) {
-                container.innerHTML = '<div style="text-align:center; font-size:0.85rem; color:var(--text-muted); padding:20px;">История пуста</div>';
-                return;
-            }
-
+            if(list.length === 0) { container.innerHTML = '<div style="text-align:center; font-size:0.85rem; color:var(--text-muted); padding:20px;">История пуста</div>'; return; }
+            
             list.forEach(item => {
-                const el = document.createElement('div');
-                el.className = 'history-item';
-                el.innerHTML = `
-                    <div class="history-item-info">
-                        <strong>${item.algo} [${item.time}]</strong>
-                        <span>Изучено: ${item.checked} | Путь: ${item.route}</span>
-                    </div>
-                    <button class="btn-replay" data-id="${item.id}">Загрузить</button>
-                `;
+                const el = document.createElement('div'); el.className = 'history-item';
+                el.innerHTML = `<div class="history-item-info"><strong>${item.algo} [${item.time}]</strong><span>Изучено: ${item.checked} | Путь: ${item.route}</span></div><button class="btn-replay" data-id="${item.id}">Открыть</button>`;
                 container.appendChild(el);
             });
 
-            // Навешивание хэндлеров на загрузку карт из памяти
             container.querySelectorAll('.btn-replay').forEach(btn => {
                 btn.onclick = (e) => {
                     const targetId = parseInt(e.target.getAttribute('data-id'));
-                    const selected = list.find(x => x.id === targetId);
-                    if(selected) {
-                        grid = JSON.parse(JSON.stringify(selected.gridState));
-                        resetAIStats();
-                        document.getElementById('historyOverlay').style.display = 'none';
+                    const sel = list.find(x => x.id === targetId);
+                    if(sel) {
+                        grid = JSON.parse(JSON.stringify(sel.gridState));
+                        if(sel.start) startNode = sel.start; if(sel.end) endNode = sel.end;
+                        resetAIStats(); document.getElementById('historyOverlay').style.display = 'none';
                     }
                 };
             });
         }
 
         function getValidNeighbors(node) {
-            let res = [];
-            let dirs = [{x:0,y:-1}, {x:1,y:0}, {x:0,y:1}, {x:-1,y:0}];
+            let res = []; let dirs = [{x:0,y:-1}, {x:1,y:0}, {x:0,y:1}, {x:-1,y:0}];
             for(let d of dirs) {
                 let nx = node.x + d.x, ny = node.y + d.y;
-                if(nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS && grid[nx][ny] !== 1) {
-                    res.push({x: nx, y: ny});
-                }
+                if(nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS && grid[nx][ny] !== 1) res.push({x: nx, y: ny});
             }
             return res;
         }
 
         const sleep = (ms) => new Promise(res => setTimeout(res, ms));
-
         function setUIDisabled(state) {
             isRunning = state;
-            document.getElementById('btnLaunch').disabled = state;
-            document.getElementById('btnGenerate').disabled = state;
-            document.getElementById('btnClear').disabled = state;
-            document.getElementById('algoSelector').disabled = state;
+            document.getElementById('btnLaunch').disabled = state; document.getElementById('btnGenerate').disabled = state;
+            document.getElementById('btnClear').disabled = state; document.getElementById('algoSelector').disabled = state;
         }
 
         async function launchAI() {
             if (isRunning) return;
-            setUIDisabled(true);
-            resetAIStats();
-            startRecording(); // Запуск видеозаписи
-
+            setUIDisabled(true); resetAIStats(); startRecording();
             const algo = document.getElementById('algoSelector').value;
             const selectEl = document.getElementById('algoSelector');
             const currentAlgoText = selectEl.options[selectEl.selectedIndex].text.split(' ')[1];
@@ -733,102 +538,58 @@
             else if (algo === 'bfs') await solveBFS();
             else if (algo === 'dfs') await solveDFS();
 
-            stopRecording(); // Стоп видео
+            stopRecording();
             pushToHistory(currentAlgoText, visitedArr.length, finalPath.length);
             setUIDisabled(false);
         }
 
         function tracePath(endInstance) {
             let curr = endInstance;
-            while(curr !== null) {
-                finalPath.unshift(curr);
-                curr = curr.parent;
-            }
-            document.getElementById('stat-path').innerText = finalPath.length;
-            render();
+            while(curr !== null) { finalPath.unshift(curr); curr = curr.parent; }
+            document.getElementById('stat-path').innerText = finalPath.length; render();
         }
 
         async function solveAStar(isDijkstra) {
-            let openSet = [{...startNode, g: 0, f: 0, parent: null}];
-            let closedSet = new Set();
+            let openSet = [{...startNode, g: 0, f: 0, parent: null}]; let closedSet = new Set();
             let h = (n) => isDijkstra ? 0 : Math.abs(n.x - endNode.x) + Math.abs(n.y - endNode.y);
-
             openSet[0].f = h(startNode);
 
             while(openSet.length > 0) {
-                openSet.sort((a,b) => a.f - b.f);
-                let current = openSet.shift();
-                
+                openSet.sort((a,b) => a.f - b.f); let current = openSet.shift();
                 if(current.x === endNode.x && current.y === endNode.y) { tracePath(current); return; }
-
-                closedSet.add(`${current.x},${current.y}`);
-                visitedArr.push(current);
+                closedSet.add(`${current.x},${current.y}`); visitedArr.push(current);
 
                 for(let neighbor of getValidNeighbors(current)) {
                     if(closedSet.has(`${neighbor.x},${neighbor.y}`)) continue;
-                    let tentG = current.g + 1;
-                    let existing = openSet.find(o => o.x === neighbor.x && o.y === neighbor.y);
-
-                    if(!existing) {
-                        openSet.push({x: neighbor.x, y: neighbor.y, g: tentG, f: tentG + h(neighbor), parent: current});
-                    } else if(tentG < existing.g) {
-                        existing.g = tentG; existing.f = tentG + h(existing); existing.parent = current;
-                    }
+                    let tentG = current.g + 1; let existing = openSet.find(o => o.x === neighbor.x && o.y === neighbor.y);
+                    if(!existing) openSet.push({x: neighbor.x, y: neighbor.y, g: tentG, f: tentG + h(neighbor), parent: current});
+                    else if(tentG < existing.g) { existing.g = tentG; existing.f = tentG + h(existing); existing.parent = current; }
                 }
-                frontierArr = openSet.map(o => ({x: o.x, y: o.y}));
-                document.getElementById('stat-visited').innerText = visitedArr.length;
-                render();
-                await sleep(aiDelay);
+                frontierArr = openSet.map(o => ({x: o.x, y: o.y})); document.getElementById('stat-visited').innerText = visitedArr.length; render(); await sleep(aiDelay);
             }
         }
 
         async function solveBFS() {
-            let queue = [{...startNode, parent: null}];
-            let visited = new Set([`${startNode.x},${startNode.y}`]);
-
+            let queue = [{...startNode, parent: null}]; let visited = new Set([`${startNode.x},${startNode.y}`]);
             while(queue.length > 0) {
-                let current = queue.shift();
-                if(current.x === endNode.x && current.y === endNode.y) { tracePath(current); return; }
-                
+                let current = queue.shift(); if(current.x === endNode.x && current.y === endNode.y) { tracePath(current); return; }
                 visitedArr.push(current);
-
                 for(let neighbor of getValidNeighbors(current)) {
                     let key = `${neighbor.x},${neighbor.y}`;
-                    if(!visited.has(key)) {
-                        visited.add(key);
-                        queue.push({...neighbor, parent: current});
-                    }
+                    if(!visited.has(key)) { visited.add(key); queue.push({...neighbor, parent: current}); }
                 }
-                frontierArr = [...queue];
-                document.getElementById('stat-visited').innerText = visitedArr.length;
-                render();
-                await sleep(aiDelay);
+                frontierArr = [...queue]; document.getElementById('stat-visited').innerText = visitedArr.length; render(); await sleep(aiDelay);
             }
         }
 
         async function solveDFS() {
-            let stack = [{...startNode, parent: null}];
-            let visited = new Set();
-
+            let stack = [{...startNode, parent: null}]; let visited = new Set();
             while(stack.length > 0) {
-                let current = stack.pop();
-                let key = `${current.x},${current.y}`;
-
-                if(visited.has(key)) continue;
-                visited.add(key);
-                visitedArr.push(current);
-
+                let current = stack.pop(); let key = `${current.x},${current.y}`;
+                if(visited.has(key)) continue; visited.add(key); visitedArr.push(current);
                 if(current.x === endNode.x && current.y === endNode.y) { tracePath(current); return; }
-
-                for(let neighbor of getValidNeighbors(current)) {
-                    if(!visited.has(`${neighbor.x},${neighbor.y}`)) {
-                        stack.push({...neighbor, parent: current});
-                    }
-                }
-                frontierArr = [...stack];
-                document.getElementById('stat-visited').innerText = visitedArr.length;
-                render();
-                await sleep(aiDelay);
+                for(let neighbor of getValidNeighbors(current)) { if(!visited.has(`${neighbor.x},${neighbor.y}`)) stack.push({...neighbor, parent: current}); }
+                frontierArr = [...stack]; document.getElementById('stat-visited').innerText = visitedArr.length; render(); await sleep(aiDelay);
             }
         }
 
@@ -837,4 +598,3 @@
     </script>
 </body>
 </html>
- 
