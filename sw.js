@@ -1,11 +1,12 @@
-const CACHE_NAME = 'ai-maze-liquid-v13'; // Версия v13 для принудительного сброса старого кэша на смартфонах
+const CACHE_NAME = 'ai-maze-liquid-v14'; // Повысили версию до v14 для сброса старой памяти
 const ASSETS = [
   './',
   'index.html',
-  'manifest.json'
+  'manifest.json',
+  'win.mp3' // Добавили аудиофайл в кэш для полной автономности
 ];
 
-// Установка: скачиваем новые файлы и заставляем воркер активироваться немедленно
+// Установка: скачиваем обновлённые ресурсы
 self.addEventListener('install', (e) => {
   self.skipWaiting(); 
   e.waitUntil(
@@ -13,7 +14,7 @@ self.addEventListener('install', (e) => {
   );
 });
 
-// Активация: находим абсолютно все старые версии кэша и удаляем их
+// Активация: вычищаем абсолютно все предыдущие версии кэша из памяти смартфона
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
@@ -25,11 +26,11 @@ self.addEventListener('activate', (e) => {
           }
         })
       );
-    }).then(() => self.clients.claim()) // Немедленно берём управление приложением в свои руки
+    }).then(() => self.clients.claim()) // Мгновенно берём под контроль открытые вкладки
   );
 });
 
-// Перехват запросов: отдаем файлы из свежего кэша для мгновенной работы в offline
+// Перехват запросов: обеспечиваем моментальный запуск приложения в offline-режиме
 self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.match(e.request).then((cached) => cached || fetch(e.request))
